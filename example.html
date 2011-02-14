@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" />
+	<meta charset="utf-8" />
+
+	<title>Simple Form Validation</title>
+
+	<style>
+	body {
+		font-size:0.75em;
+		font-family:Arial, sans-serif;
+		color:#333;
+		background:#fff;
+	}
+
+	h1, h2, h3, h4, h5 {
+		line-height:1;
+	}
+		h1 {
+			font-size:2.33em;
+		}
+		h2, h3, h4, h5 {
+			font-size:1.5em;
+			margin-bottom:0.5em;
+		}
+
+	p, ul, pre {
+		margin:0 0 1em;
+		line-height:1.5;
+	}
+
+	pre {
+		font-size:1.25em;
+		background:#eee;
+		cursor:help;
+	}
+	code {
+		font-family:Consolas, "Lucida Console", Monaco, monospace;
+		color:#80f;
+	}
+
+	#content {
+		width:640px;
+		margin:20px auto;
+	}
+
+	/* Example styles */
+	label {
+		display:block;
+		line-height:1.5;
+		white-space:nowrap;
+	}
+
+	input, textarea {
+		width:240px;
+		height:1.2em;
+		padding:5px;
+		font:inherit;
+		color:#888;
+	}
+		input:focus, textarea:focus {
+			color:#000;
+		}
+		textarea {
+			height:6em;
+			resize:none;
+		}
+		.checkbox input, input[type=checkbox] {
+			float:left;
+			width:auto;
+			height:auto;
+			margin-right:10px;
+			padding:0;
+		}
+
+	.form_error {
+		clear:both;
+		color:#f00;
+	}
+
+	button {
+		padding:5px 6px;
+	}
+
+	.row {
+		margin-bottom:0.5em;
+	}
+	</style>
+
+</head>
+<body>
+
+	<div id="content">
+
+		<h1>Simple Form Validation</h1>
+
+		<p>Prototypal form validation. Full docs coming soon.</p>
+
+		<p>Tested in the following browsers:</p>
+
+		<ul>
+			<li>Firefox 3.6</li>
+			<li>Firefox 4</li>
+			<li>Safari 5</li>
+			<li>Chrome 8 and 9</li>
+			<li>Internet Explorer 7, 8 and 9</li>
+		</ul>
+
+		<h2>Installation</h2>
+
+		<p>Include the Javascript file (minified version recommended for production use) within your page and instantiate a new validation
+		object using the <code>Validate()</code> constructor method. The constructor takes 3 arguments:-</p>
+
+		<ul>
+			<li>Form ID {string}</li>
+			<li>Validation methods {object}</li>
+			<li>Options {object} <em>(Not required)</em></li>
+		</ul>
+
+		<pre title="Javascript"><code>
+	var check_this = Validate('my_form', { methods }, { options });
+		</code></pre>
+
+		<p>The second argument is an object containing your validation methods in the format <code>input_id: { validation_method:
+		argument }</code> and accompanying error message. Current methods available are:-</p>
+
+		<ul>
+			<li><code>present</code> {boolean} A value must or must not be present</li>
+			<li><code>test</code> {string} Reference to regular expression</li>
+			<li><code>minimum_length</code> {integer} A string is longer than given characters</li>
+			<li><code>maximum_length</code> {integer} A string is less than given characters</li>
+			<li><code>greater_than</code> {integer} A number is greater than</li>
+			<li><code>less_than</code> {integer} A number is less than</li>
+		</ul>
+
+		<p>NOTE: Currently you can only attach a single error message to each form input so choose your words wisely.</p>
+
+		<p>Options can optionally be passed into each instance:-</p>
+
+		<ul>
+			<li><code>error_node</code> {string} <em>(Default: div)</em> Node to wrap error message with</li>
+			<li><code>error_class</code> {string} <em>(Default: form_error)</em> Class to apply to error node</li>
+			<li><code>error_display</code> {boolean} <em>Default: true</em> Display errors (you can always retrieve errors manually)</li>
+			<li><code>error_placement</code> {string} <em>before|after</em> Show errors at the top or bottom of the inputs parent node (before|after)</li>
+		</ul>
+
+		<h3></h3>
+
+		<h4>Example</h4>
+
+		<form id="test" action="" method="post">
+		<fieldset>
+
+			<div class="row">
+				<label for="name">Name</label>
+				<input type="text" id="name" name="name" />
+			</div>
+
+			<div class="row">
+				<label for="email_address">Email Address</label>
+				<input type="text" id="email_address" name="email-address" />
+			</div>
+
+			<div class="row">
+				<label for="confirm_email">Confirm Email Address</label>
+				<input type="text" id="confirm_email" name="confirm-email" />
+			</div>
+
+			<div class="row checkbox">
+				<label for="accept_terms" class="label-checkbox"><input type="checkbox" id="accept_terms" name="accept-terms" value="true" /> Accept terms</label>
+			</div>
+
+			<div class="row buttons">
+				<button name="submit" type="submit">Validate</button>
+			</div>
+
+		</fieldset>
+		</form>
+
+	</div>
+
+	<script src="validation.js"></script>
+	<script>
+	var test_validate = Validate('test', {
+		name: {
+			present: true,
+			error: 'Please enter your first name'
+		},
+		email_address: {
+			present: true,
+			test: 'email',
+			error: 'Please enter your valid email address'
+		},
+		confirm_email: {
+			present: true,
+			match: 'email_address',
+			error: 'Please confirm your email address'
+		},
+		accept_terms: {
+			present: true,
+			error: 'You must accept the terms'
+		}
+	}, {});
+	</script>
+
+</body>
+</html>
