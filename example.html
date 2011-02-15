@@ -23,23 +23,42 @@
 		}
 		h2, h3, h4, h5 {
 			font-size:1.5em;
-			margin-bottom:0.5em;
+			margin:1.5em 0 0.5em;
 		}
 
-	p, ul, pre {
+	p, ul, ol, pre {
 		margin:0 0 1em;
 		line-height:1.5;
 	}
 
-	pre {
-		font-size:1.25em;
-		background:#eee;
-		cursor:help;
+	dl {
+		margin:1em 0 1em 15px;
 	}
-	code {
+		dt {
+			line-height:1.5;
+			font-size:1.143em;
+			font-weight:bold;
+		}
+		dd {
+			margin:0 0 1.5em;
+		}
+			dd dl {
+				margin-left:30px;
+			}
+				dd dt {
+					font-size:1em;
+				}
+
+	pre, code {
+		font-size:1.071em;
 		font-family:Consolas, "Lucida Console", Monaco, monospace;
 		color:#80f;
+		cursor:help;
 	}
+		pre {
+			overflow:hidden;
+			background:#eee;
+		}
 
 	#content {
 		width:640px;
@@ -101,8 +120,7 @@
 		<p>Tested in the following browsers:</p>
 
 		<ul>
-			<li>Firefox 3.6</li>
-			<li>Firefox 4</li>
+			<li>Firefox 3.6 and 4</li>
 			<li>Safari 5</li>
 			<li>Chrome 8 and 9</li>
 			<li>Internet Explorer 7, 8 and 9</li>
@@ -110,43 +128,96 @@
 
 		<h2>Installation</h2>
 
-		<p>Include the Javascript file (minified version recommended for production use) within your page and instantiate a new validation
-		object using the <code>Validate()</code> constructor method. The constructor takes 3 arguments:-</p>
+		<p>Include the Javascript file (minified version recommended for production use) within your page and instantiate a new Validation
+		object using the <code>Validate()</code> constructor method.</p>
 
-		<ul>
-			<li>Form ID {string}</li>
-			<li>Validation methods {object}</li>
-			<li>Options {object} <em>(Not required)</em></li>
-		</ul>
+		<p><code>var check_this = Validate('my_form', { methods }, { options });</code></p>
 
-		<pre title="Javascript"><code>
-	var check_this = Validate('my_form', { methods }, { options });
-		</code></pre>
+		<p>The constructor takes 3 arguments:</p>
 
-		<p>The second argument is an object containing your validation methods in the format <code>input_id: { validation_method:
-		argument }</code> and accompanying error message. Current methods available are:-</p>
+		<dl>
+			<dt>Form ID</dt>
+			<dd>
+				<p>The ID string of your form for use with <code>document.getElementbyId</code>.</p>
+			</dd>
+			<dt>Validation methods</dt>
+			<dd>
+				<p>This is an object in the format <code>{ method: argument }</code>. Current methods available are:</p>
 
-		<ul>
-			<li><code>present</code> {boolean} A value must or must not be present</li>
-			<li><code>test</code> {string} Reference to regular expression</li>
-			<li><code>minimum_length</code> {integer} A string is longer than given characters</li>
-			<li><code>maximum_length</code> {integer} A string is less than given characters</li>
-			<li><code>greater_than</code> {integer} A number is greater than</li>
-			<li><code>less_than</code> {integer} A number is less than</li>
-		</ul>
+				<dl>
+					<dt>present</dt>
+					<dd>Any value must or must not be present. The argument is a boolean.</dd>
+					<dt>test</dt>
+					<dd>Reference to regular expression. The argument is a string.</dd>
+					<dt>minimum_length</dt>
+					<dd>A string is longer than argument characters. The argument is an integer.</dd>
+					<dt>maximum_length</dt>
+					<dd>A string is less than argument characters. The argument is an integer.</dd>
+					<dt>greater_than</dt>
+					<dd>A number is greater than argument. The argument is an integer.</dd>
+					<dt>less_than</dt>
+					<dd>A number is less than argument. The argument is an integer.</dd>
+				</dl>
 
-		<p>NOTE: Currently you can only attach a single error message to each form input so choose your words wisely.</p>
+				<p>If an input has any validation methods applied to it an error message can be defined using the <code>error</code>
+				variable and a text string.</p>
 
-		<p>Options can optionally be passed into each instance:-</p>
+				<p><strong>Note:</strong> Currently only a single error message can be applied to each form input so choose your words
+				wisely.</p>
+			</dd>
+			<dt>Options</dt>
+			<dd>
+				<p>Default options can be overwritten for each Validation instance. Currently all options are related to the display of
+				error messages:</p>
 
-		<ul>
-			<li><code>error_node</code> {string} <em>(Default: div)</em> Node to wrap error message with</li>
-			<li><code>error_class</code> {string} <em>(Default: form_error)</em> Class to apply to error node</li>
-			<li><code>error_display</code> {boolean} <em>Default: true</em> Display errors (you can always retrieve errors manually)</li>
-			<li><code>error_placement</code> {string} <em>before|after</em> Show errors at the top or bottom of the inputs parent node (before|after)</li>
-		</ul>
+				<dl>
+					<dt>error_node</dt>
+					<dd>
+						<p>Node name to wrap error message with. The default is <code>'div'</code>.</p>
+					</dd>
+					<dt>error_class</dt>
+					<dd>
+						<p>Class name string to apply to the error node. The default is <code>'form_error'</code>.</p>
+					</dd>
+					<dt>error_message</dt>
+					<dd>
+						<p>A global error message string for this form.</p>
+					</dd>
+					<dt>error_display</dt>
+					<dd>
+						<p>Display errors boolean (you can always retrieve errors manually). The default is <code>true</code>.</p>
+					</dd>
+					<dt>error_placement</dt>
+					<dd>
+						<p>Show errors at the top or bottom of the inputs parent node (before|after). The default is <code>'after'</code></p>
+					</dd>
+				</dl>
 
-		<h3></h3>
+			</dd>
+		</dl>
+
+		<h3>Extending</h3>
+
+		<dl>
+			<dt>Add another method to execute on form submission</dt>
+			<dd>
+				<p>The <code>bind_event</code> method can be used to add more event listeners.</p>
+
+				<p><code>your_object.bind_event(function() {} );</code></p>
+			</dd>
+			<dt>Retrieving individual error messages</dt>
+			<dd>
+				<p>Generated error messages are stored within the object and can be read using the input ID as the key.</p>
+
+				<p><code>your_object.errors['input_id'];</code></dd>
+			<dt>Adding more regular expressions</dt>
+			<dd>
+				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
+				name as the key.</p>
+
+				<p><code>your_object.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
+			</dd>
+		</dl>
 
 		<h4>Example</h4>
 
@@ -178,6 +249,33 @@
 
 		</fieldset>
 		</form>
+
+		<h5>Sample code</h5>
+
+		<p>The code below is used to validate the example form above.</p>
+
+		<pre title="Javascript">
+	var test_validate = Validate('test', {
+		name: {
+			present: true,
+			error: 'Please enter your first name'
+		},
+		email_address: {
+			present: true,
+			test: 'email',
+			error: 'Please enter your valid email address'
+		},
+		confirm_email: {
+			present: true,
+			match: 'email_address',
+			error: 'Please confirm your email address'
+		},
+		accept_terms: {
+			present: true,
+			error: 'You must accept the terms'
+		}
+	}, {});
+		</pre>
 
 	</div>
 

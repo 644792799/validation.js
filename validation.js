@@ -1,7 +1,7 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.4.0
- * @modified 14/02/2011
+ * @version 0.4.2
+ * @modified 15/02/2011
  */
 
 // Prototypal inheritance operator, Douglas Crockford <http://javascript.crockford.com/prototypal.html>
@@ -22,10 +22,11 @@ var Validation = {
 	init: function(form_id, model, opts)
 	{
 		this.options = {
-			error_node: opts.error_node || 'div',            // Node to wrap error message with
-			error_class: opts.error_class || 'form_error',   // Class to apply to error node
-			error_display: opts.error_display || true,       // Display errors (you can always retrieve errors manually)
-			error_placement: opts.error_placement || 'after' // At the top or bottom of the inputs parent node
+			error_node: opts.error_node || 'div',                               // Node to wrap error message with
+			error_class: opts.error_class || 'form_error',                      // Class to apply to error node
+			error_display: opts.error_display || true,                          // Display errors (you can always retrieve errors manually)
+			error_message: opts.error_message || 'The given value is invalid.', // Default error message to display
+			error_placement: opts.error_placement || 'after'                    // At the top or bottom of the inputs parent node
 		};
 
 		// Check target form is available and given model is a valid object
@@ -47,7 +48,7 @@ var Validation = {
 			// loop through tests object
 			for (var input in self.model)
 			{
-				var target, value;
+				var target, value, error = self.model[input]['error'] || self.options.error_message;
 
 				// Check target input is available
 				// TODO: Support form.name?
@@ -73,8 +74,8 @@ var Validation = {
 						// - Methods may return null
 						if (self[method](value, self.model[input][method]) === false)
 						{
-							self.valid = false, self.errors[input] = self.model[input]['error'];
-							self.create_error_message(target, self.model[input]['error']);
+							self.valid = false;
+							self.create_error_message(target, error);
 							break;
 						}
 					}
@@ -128,6 +129,8 @@ var Validation = {
 	 */
 	create_error_message: function(target, message)
 	{
+		this.errors[target.id] = message;
+
 		if (!message || !this.options.error_display)
 			return;
 
