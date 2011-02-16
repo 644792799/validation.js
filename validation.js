@@ -1,7 +1,7 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.4.2
- * @modified 15/02/2011
+ * @version 0.5.1
+ * @modified 16/02/2011
  */
 
 // Prototypal inheritance operator, Douglas Crockford <http://javascript.crockford.com/prototypal.html>
@@ -31,7 +31,9 @@ var Validation = {
 
 		// Check target form is available and given model is a valid object
 		if (!(this.form = document.getElementById(form_id)) || typeof model != 'object')
+		{
 			return false;
+		}
 
 		this.model = model;
 
@@ -43,7 +45,8 @@ var Validation = {
 		{
 			event = event || null;
 
-			self.valid = true, self.errors = [];
+			self.valid = true;
+			self.errors = [];
 
 			// loop through tests object
 			for (var input in self.model)
@@ -53,7 +56,9 @@ var Validation = {
 				// Check target input is available
 				// TODO: Support form.name?
 				if (!(target = document.getElementById(input)))
+				{
 					break;
+				}
 
 				// Get form input value
 				value = self.get_value(target);
@@ -67,8 +72,10 @@ var Validation = {
 					if (method != 'error')
 					{
 						// Check validation method is available
-						if (!typeof self[method] == 'function')
+						if (typeof self[method] !== 'function')
+						{
 							break;
+						}
 
 						// Perform validation method
 						// - Methods may return null
@@ -86,7 +93,9 @@ var Validation = {
 
 			// Prevent form submission if invalid
 			if (!self.valid && event.preventDefault)
+			{
 				event.preventDefault();
+			}
 		});
 	},
 
@@ -98,9 +107,13 @@ var Validation = {
 	bind_event: function(handler)
 	{
 		if (this.form.addEventListener)
+		{
 			this.form.addEventListener('submit', handler, false);
+		}
 		else
+		{
 			this.form.attachEvent('onsubmit', handler);
+		}
 	},
 
 	/**
@@ -113,12 +126,18 @@ var Validation = {
 		var type = false;
 
 		if (obj.nodeName.toLowerCase() == 'input')
+		{
 			type = obj.getAttribute('type');
+		}
 
 		if (type && (type == 'checkbox' || type == 'radio'))
+		{
 			return obj.checked ? true : false;
+		}
 		else
-			return obj.value != undefined ? obj.value : false;
+		{
+			return obj.value !== undefined ? obj.value : false;
+		}
 	},
 
 	/**
@@ -132,7 +151,9 @@ var Validation = {
 		this.errors[target.id] = message;
 
 		if (!message || !this.options.error_display)
+		{
 			return;
+		}
 
 		var msg = document.createElement(this.options.error_node);
 		    msg.setAttribute('class', this.options.error_class);
@@ -144,10 +165,12 @@ var Validation = {
 		if (this.options.error_placement == 'before')
 		{
 			var before = target.parentNode.firstChild;
-			target.insertBefore(msg, before)
+			target.insertBefore(msg, before);
 		}
 		else
+		{
 			target.parentNode.appendChild(msg);
+		}
 	},
 
 	/**
@@ -158,24 +181,12 @@ var Validation = {
 	// TODO: Support for before/after option
 	clear_error_message: function(id)
 	{
-		var error;
+		var error = document.getElementById('error__' + id);
 
-		if (error = document.getElementById('error__' + id))
-				error.parentNode.removeChild(error);
-	},
-
-	/**
-	 * Regular expressions for use with test() method
-	 * - Add more with 'your_object.methods.expressions[name] = /^*$/'
- 	 */
-	expressions: {
-		alphanumeric: /^[a-z0-9_-]$/,                                          // Characters a-z, 0-9, -, _ only
-		number: /^([0-9])+$/,                                                  // Characters 0-9 only
-		text: /^([A-Za-z])+$/,                                                 // Characters a-z only
-		email: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,              // abc@xyz.com
-		url: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, // (http(s)://)(www.)abc.xyz*
-		date: /^([0-9][0-9]\-[0-9][0-9]\-[0-9][0-9][0-9][0-9])$/,              // 12-34-5678
-		time: /^([0-9][0-9]:[0-9][0-9])$/                                      // 12:34
+		if (error)
+		{
+			error.parentNode.removeChild(error);
+		}
 	},
 
 	/**
@@ -189,18 +200,60 @@ var Validation = {
 
 		// Boolean checkboxes or radio buttons
 		if (typeof value == 'boolean')
+		{
 			bool = value;
-
+		}
 		// Check if value is null or undefined with loose check
 		else if (!value)
+		{
 			bool = false;
-
+		}
 		// Check string entered is greater than zero
 		else
+		{
 			bool = !! (value.length > 0);
+		}
 
 		// Optionally invert if checking for NOT present
 		return (not) ? bool : !bool;
+	},
+
+	/**
+	 * Regular expressions for use with test() method
+	 * - Add more with 'your_object.methods.expressions[name] = /^*$/'
+ 	 */
+	expressions: {
+		alphanumeric: /^([a-z0-9_\-])$/,                                         // Characters a-z, 0-9, -, _ only
+		number: /^([0-9])+$/,                                                    // Characters 0-9 only
+		text: /^([A-Za-z])+$/,                                                   // Characters a-z only
+		email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,              // abc@xyz.com
+		url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/, // (http(s)://)(abc.)def.xyz*
+		date: /^(([0-3])?[0-9]\-([0-1])?[0-9]\-([0-9][0-9])?[0-9][0-9])$/,       // (0-3)0-9-(0-1)0-9-(0-9, 0-9)0-9,0-9
+		time: /^([0-9][0-9]:[0-9][0-9])$/                                        // 12:34
+	},
+
+	/**
+	 * Test value against regular expression
+	 * If the requested regex does not exist the method will return false
+	 *
+	 * @param {string} value
+	 * @param {string} regex
+	 */
+	test: function(value, regex)
+	{
+		if (!this.present(value, true))
+		{
+			return null;
+		}
+
+		if (this.expressions[regex])
+		{
+			return !! (this.expressions[regex]).test(value);
+		}
+		else
+		{
+			return false;
+		}
 	},
 
 	/**
@@ -212,7 +265,9 @@ var Validation = {
 	minimum_length: function(value, required)
 	{
 		if (!this.present(value))
+		{
 			return null;
+		}
 
 		return !! (value.length >= required);
 	},
@@ -226,7 +281,9 @@ var Validation = {
 	maximum_length: function(value, required)
 	{
 		if (!this.present(value))
+		{
 			return null;
+		}
 
 		return !! (value.length <= required);
 	},
@@ -240,9 +297,11 @@ var Validation = {
 	greater_than: function(value, required)
 	{
 		if (!this.present(value))
+		{
 			return null;
+		}
 
-		return !! (parseInt(value) >= required)
+		return !! (parseInt(value, 10) >= required);
 	},
 
 	/**
@@ -254,9 +313,11 @@ var Validation = {
 	less_than: function(value, required)
 	{
 		if (!this.present(value))
+		{
 			return null;
+		}
 
-		return !! (parseInt(value) <= required);
+		return !! (parseInt(value, 10) <= required);
 	},
 
 	/**
@@ -270,24 +331,6 @@ var Validation = {
 		var target = document.getElementById(target_id);
 		var match = target ? this.get_value(target) : null;
 		return !! (value === match);
-	},
-
-	/**
-	 * Test value against regular expression
-	 * If the requested regex does not exist the method will return false
-	 *
-	 * @param {string} value
-	 * @param {string} regex
-	 */
-	test: function(value, regex)
-	{
-		if (!this.present(value))
-			return null;
-
-		if (this.expressions[regex])
-			return !! (this.expressions[regex]).test(value);
-		else
-			return false;
 	}
 };
 

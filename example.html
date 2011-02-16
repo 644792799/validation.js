@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 
@@ -239,6 +239,11 @@
 				<input type="text" id="confirm_email" name="confirm-email" />
 			</div>
 
+			<div class="row">
+				<label for="date">Date (d-m-yy or dd-mm-yyyy)</label>
+				<input type="text" id="date" name="date" />
+			</div>
+
 			<div class="row checkbox">
 				<label for="accept_terms" class="label-checkbox"><input type="checkbox" id="accept_terms" name="accept-terms" value="true" /> Accept terms</label>
 			</div>
@@ -270,11 +275,16 @@
 			match: 'email_address',
 			error: 'Please confirm your email address'
 		},
+		date: {
+			present: true,
+			test: 'date',
+			error: 'Please enter a valid date'
+		},
 		accept_terms: {
 			present: true,
 			error: 'You must accept the terms'
 		}
-	}, {});
+	});
 		</pre>
 
 	</div>
@@ -295,6 +305,11 @@
 			present: true,
 			match: 'email_address',
 			error: 'Please confirm your email address'
+		},
+		date: {
+			present: true,
+			test: 'date',
+			error: 'Please enter a valid date'
 		},
 		accept_terms: {
 			present: true,
