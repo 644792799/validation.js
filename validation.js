@@ -1,7 +1,7 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.5.1
- * @modified 16/02/2011
+ * @version 0.6.0
+ * @modified 17/02/2011
  */
 
 // Prototypal inheritance operator, Douglas Crockford <http://javascript.crockford.com/prototypal.html>
@@ -21,10 +21,11 @@ var Validation = {
 	 */
 	init: function(form_id, model, opts)
 	{
+		// Default options
 		this.options = {
 			error_node: opts.error_node || 'div',                               // Node to wrap error message with
 			error_class: opts.error_class || 'form_error',                      // Class to apply to error node
-			error_display: opts.error_display || true,                          // Display errors (you can always retrieve errors manually)
+			error_display: opts.error_display !== false,                        // Display errors (you can always retrieve errors manually)
 			error_message: opts.error_message || 'The given value is invalid.', // Default error message to display
 			error_placement: opts.error_placement || 'after'                    // At the top or bottom of the inputs parent node
 		};
@@ -32,16 +33,16 @@ var Validation = {
 		// Check target form is available and given model is a valid object
 		if (!(this.form = document.getElementById(form_id)) || typeof model != 'object')
 		{
-			return false;
+			return null;
 		}
 
 		this.model = model;
 
-		// Keep scope reference when changing to DOM node
+		// Keep scope reference when changing to DOM nodes
 		var self = this;
 
 		// Bind submit event listener to form
-		this.bind_event(function(event)
+		this.bind(function(event)
 		{
 			event = event || null;
 
@@ -51,7 +52,7 @@ var Validation = {
 			// loop through tests object
 			for (var input in self.model)
 			{
-				var target, value, error = self.model[input]['error'] || self.options.error_message;
+				var target, value, error = self.model[input].error || self.options.error_message;
 
 				// Check target input is available
 				// TODO: Support form.name?
@@ -100,11 +101,11 @@ var Validation = {
 	},
 
 	/**
-	 * Bind event listener to target form
+	 * Bind method to target form submit event
 	 *
 	 * @param {function} handler
 	 */
-	bind_event: function(handler)
+	bind: function(handler)
 	{
 		if (this.form.addEventListener)
 		{
@@ -117,9 +118,10 @@ var Validation = {
 	},
 
 	/**
-	 * Get input value or status
+	 * Get an inputs value or status
 	 *
-	 * @param obj
+	 * @param {object} obj
+	 * @return The target input value
 	 */
 	get_value: function(obj)
 	{
@@ -141,10 +143,10 @@ var Validation = {
 	},
 
 	/**
-	 * Create error message
+	 * Create an error message
 	 *
-	 * @param target
-	 * @param message
+	 * @param {object} target
+	 * @param {string} message
 	 */
 	create_error_message: function(target, message)
 	{
@@ -162,23 +164,24 @@ var Validation = {
 		var txt = document.createTextNode(message);
 		    msg.appendChild(txt);
 
+		var parent = target.parentNode;
+
 		if (this.options.error_placement == 'before')
 		{
-			var before = target.parentNode.firstChild;
-			target.insertBefore(msg, before);
+			var before = parent.firstChild;
+			parent.insertBefore(msg, before);
 		}
 		else
 		{
-			target.parentNode.appendChild(msg);
+			parent.appendChild(msg);
 		}
 	},
 
 	/**
 	 * Clear error message
 	 *
-	 * @param id
+	 * @param {string} id
 	 */
-	// TODO: Support for before/after option
 	clear_error_message: function(id)
 	{
 		var error = document.getElementById('error__' + id);
@@ -192,7 +195,8 @@ var Validation = {
 	/**
 	 * Test if any value is present or checked
 	 *
-	 * @param value
+	 * @param {boolean|string|undefined} value
+	 * @returns Whether argument is true or false
 	 */
 	present: function(value, not)
 	{
@@ -220,24 +224,24 @@ var Validation = {
 
 	/**
 	 * Regular expressions for use with test() method
-	 * - Add more with 'your_object.methods.expressions[name] = /^*$/'
+	 * Add more with 'your_object.methods.expressions[name] = /^*$/'
  	 */
 	expressions: {
-		alphanumeric: /^([a-z0-9_\-])$/,                                         // Characters a-z, 0-9, -, _ only
-		number: /^([0-9])+$/,                                                    // Characters 0-9 only
-		text: /^([A-Za-z])+$/,                                                   // Characters a-z only
-		email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,              // abc@xyz.com
-		url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/, // (http(s)://)(abc.)def.xyz*
-		date: /^(([0-3])?[0-9]\-([0-1])?[0-9]\-([0-9][0-9])?[0-9][0-9])$/,       // (0-3)0-9-(0-1)0-9-(0-9, 0-9)0-9,0-9
-		time: /^([0-9][0-9]:[0-9][0-9])$/                                        // 12:34
+		alphanumeric: /^([a-z0-9_\-])$/,                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
+		number: /^([0-9])+$/,                                                    // Characters 0-9 only of any length
+		text: /^(^[a-z])+$/,                                                     // Characters a-z of any length in either case
+		email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,              // TLD email address
+		url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/, // URL with or without http(s)/www
+		date: /^(([0-3])?[0-9]\-([0-1])?[0-9]\-([0-9][0-9])?[0-9][0-9])$/,       // UK date in format day-month-year with or without leading zeroes or century
+		time: /^(([0-2])?[0-9]:[0-5][0-9])$/                                     // Time in format hours:minutes with or without leading hour zero in 12 or 24 hour format
 	},
 
 	/**
 	 * Test value against regular expression
-	 * If the requested regex does not exist the method will return false
 	 *
 	 * @param {string} value
 	 * @param {string} regex
+	 * @return A boolean if test is performed or does not exist. Null if no value is present.
 	 */
 	test: function(value, regex)
 	{
@@ -340,8 +344,7 @@ var Validation = {
  * @param {string} form_id
  * @param {object} model
  * @param {object} opts
- * @return new Validation object
- * @type object
+ * @return A new Validation object
  */
 // TODO: form name as well as ID?
 function Validate (form_id, model, opts)

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 
@@ -148,7 +148,40 @@
 					<dt>present</dt>
 					<dd>Any value must or must not be present. The argument is a boolean.</dd>
 					<dt>test</dt>
-					<dd>Reference to regular expression. The argument is a string.</dd>
+					<dd>
+						<p>Reference to regular expression. The argument is a string. Included expressions are:
+
+						<ul>
+							<li>
+								<dfn title="([a-z0-9_\-])"><code>alphanumeric</code></dfn>
+								Characters a-z, 0-9, underscores and hyphens of any length in lowercase only.
+							</li>
+							<li>
+								<dfn title="([0-9])+"><code>number</code></dfn>
+								Characters 0-9 only of any length.
+							</li>
+							<li>
+								<dfn title="(^[a-z])+"><code>text</code></dfn>
+								Characters a-z of any length in either case.
+							</li>
+							<li>
+								<dfn title="^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})"><code>email</code></dfn>
+								TLD email address.
+							</li>
+							<li>
+								<dfn title="(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?"><code>url</code></dfn>
+								URL with or without http(s)/www.
+							</li>
+							<li>
+								<dfn title="(([0-3])?[0-9]\-([0-1])?[0-9]\-([0-9][0-9])?[0-9][0-9])"><code>date</code></dfn>
+								UK date in format day-month-year with or without leading zeroes or century.
+							</li>
+							<li>
+								<dfn title="(([0-2])?[0-9]:[0-5][0-9])"><code>time</code></dfn>
+								Time in format hours:minutes with or without leading hour zero in 12 or 24 hour format.
+							</li>
+						</ul>
+					</dd>
 					<dt>minimum_length</dt>
 					<dd>A string is longer than argument characters. The argument is an integer.</dd>
 					<dt>maximum_length</dt>
@@ -181,7 +214,7 @@
 					</dd>
 					<dt>error_message</dt>
 					<dd>
-						<p>A global error message string for this form.</p>
+						<p>A default error message string for each invalid input.</p>
 					</dd>
 					<dt>error_display</dt>
 					<dd>
@@ -201,15 +234,15 @@
 		<dl>
 			<dt>Add another method to execute on form submission</dt>
 			<dd>
-				<p>The <code>bind_event</code> method can be used to add more event listeners.</p>
+				<p>The <code>bind</code> method can be used to add more event listeners.</p>
 
-				<p><code>your_object.bind_event(function() {} );</code></p>
+				<p><code>your_object.bind(function() {} );</code></p>
 			</dd>
 			<dt>Retrieving individual error messages</dt>
 			<dd>
 				<p>Generated error messages are stored within the object and can be read using the input ID as the key.</p>
 
-				<p><code>your_object.errors['input_id'];</code></dd>
+				<p><code>your_object.errors.input_id;</code></dd>
 			<dt>Adding more regular expressions</dt>
 			<dd>
 				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
@@ -284,7 +317,7 @@
 			present: true,
 			error: 'You must accept the terms'
 		}
-	});
+	}, {});
 		</pre>
 
 	</div>
