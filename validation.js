@@ -1,6 +1,6 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.3
+ * @version 0.9.4
  * @modified 21/02/2011
  */
 
@@ -59,6 +59,7 @@ var Validation = {
 				for (var method in self.model[input])
 				{
 					var error,
+					    is_array,
 					    arguments = self.model[input][method];
 
 					if (method != 'error')
@@ -69,11 +70,21 @@ var Validation = {
 							break;
 						}
 
-						// Work out the error message to display
-						// Array literals return as an object type but behave as arrays
-						if (Object.prototype.toString.call(arguments) === '[object Array]')
+						// Check if given argument is an array
+						// Arrays return as objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
+						if (Array.isArray)
 						{
-							error = arguments[arguments.length - 1]|| self.options.error_message;
+							is_array = Array.isArray(arguments);
+						}
+						else
+						{
+							is_array = (Object.prototype.toString.call(arguments) === '[object Array]');
+						}
+
+						// Work out the error message to display
+						if (is_array)
+						{
+							error = arguments[arguments.length - 1] || self.options.error_message;
 						}
 						else
 						{
@@ -348,20 +359,20 @@ function Validate (form_id, model, opts)
 {
 	opts = opts || {};
 
-	/**
-	 * Prototypal inheritance operator support.
-	 * Douglas Crockford <http://javascript.crockford.com/prototypal.html>
-	 */
-	if (typeof Object.create !== 'function') {
-		Object.create = function (o) {
-			function F() {}
-			F.prototype = o;
-			return new F();
-		};
-	}
-
 	var validation = Object.create(Validation);
 	validation.init(form_id, model, opts);
 
 	return validation;
+}
+
+/**
+ * Prototypal inheritance operator support
+ * Douglas Crockford <http://javascript.crockford.com/prototypal.html>
+ */
+if (typeof Object.create !== 'function') {
+	Object.create = function (o) {
+		function F() {}
+		F.prototype = o;
+		return new F();
+	};
 }
