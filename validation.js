@@ -1,17 +1,8 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.6.0
- * @modified 17/02/2011
+ * @version 0.9.0
+ * @modified 21/02/2011
  */
-
-// Prototypal inheritance operator, Douglas Crockford <http://javascript.crockford.com/prototypal.html>
-if (typeof Object.create !== 'function') {
-	Object.create = function (o) {
-		function F() {}
-		F.prototype = o;
-		return new F();
-	};
-}
 
 var Validation = {
 
@@ -19,11 +10,11 @@ var Validation = {
 	 * Instantiate Validation
 	 * @see Validate
 	 */
-	init: function(form_id, model, opts)
+	init: function (form_id, model, opts)
 	{
 		// Default options
 		this.options = {
-			error_node: opts.error_node || 'div',                               // Node to wrap error message with
+			error_node: opts.error_node || 'p',                                 // Node to wrap error message with
 			error_class: opts.error_class || 'form_error',                      // Class to apply to error node
 			error_display: opts.error_display !== false,                        // Display errors (you can always retrieve errors manually)
 			error_message: opts.error_message || 'The given value is invalid.', // Default error message to display
@@ -31,7 +22,7 @@ var Validation = {
 		};
 
 		// Check target form is available and given model is a valid object
-		if (!(this.form = document.getElementById(form_id)) || typeof model != 'object')
+		if (!(this.form = document.getElementById(form_id)) || typeof model !== 'object')
 		{
 			return null;
 		}
@@ -42,34 +33,36 @@ var Validation = {
 		var self = this;
 
 		// Bind submit event listener to form
-		this.bind(function(event)
+		this.bind(function (event)
 		{
 			event = event || null;
 
-			self.valid = true;
-			self.errors = [];
+			self.form_valid = true;
+			self.errors = self.valid = [];
 
-			// loop through tests object
+			// loop through form inputs
 			for (var input in self.model)
 			{
-				var target, value, error = self.model[input].error || self.options.error_message;
+				var target;
 
-				// Check target input is available
-				// TODO: Support form.name?
+				// Check the input is available
 				if (!(target = document.getElementById(input)))
 				{
 					break;
 				}
 
-				// Get form input value
-				value = self.get_value(target);
+				// Get the input value
+				var value = self.get_value(target);
 
-				// Remove any previous errors
+				// Remove any previous error
 				self.clear_error_message(input);
 
-				// Loop through validation methods for the target input
+				// Loop through validation methods for the input
 				for (var method in self.model[input])
 				{
+					var error,
+					    arguments = self.model[input][method];
+
 					if (method != 'error')
 					{
 						// Check validation method is available
@@ -78,11 +71,22 @@ var Validation = {
 							break;
 						}
 
-						// Perform validation method
-						// - Methods may return null
-						if (self[method](value, self.model[input][method]) === false)
+						// Work out the error message to display
+						// Array literals return as an object type but behave as arrays
+						if (Object.prototype.toString.call(arguments) === '[object Array]')
 						{
-							self.valid = false;
+							error = arguments[arguments.length - 1]|| self.options.error_message;
+						}
+						else
+						{
+							error = self.model[input]['error'] || self.options.error_message;
+							arguments = [arguments];
+						}
+
+						// Test validation method
+						if (self[method].apply(self, [value].concat(arguments)) === false)
+						{
+							self.form_valid = self.valid[input] = false;
 							self.create_error_message(target, error);
 							break;
 						}
@@ -90,10 +94,10 @@ var Validation = {
 				}
 			}
 
-			event.returnValue = self.valid;
+			event.returnValue = self.form_valid;
 
 			// Prevent form submission if invalid
-			if (!self.valid && event.preventDefault)
+			if (!self.form_valid && event.preventDefault)
 			{
 				event.preventDefault();
 			}
@@ -105,7 +109,7 @@ var Validation = {
 	 *
 	 * @param {function} handler
 	 */
-	bind: function(handler)
+	bind: function (handler)
 	{
 		if (this.form.addEventListener)
 		{
@@ -123,7 +127,7 @@ var Validation = {
 	 * @param {object} obj
 	 * @return The target input value
 	 */
-	get_value: function(obj)
+	get_value: function (obj)
 	{
 		var type = false;
 
@@ -148,7 +152,7 @@ var Validation = {
 	 * @param {object} target
 	 * @param {string} message
 	 */
-	create_error_message: function(target, message)
+	create_error_message: function (target, message)
 	{
 		this.errors[target.id] = message;
 
@@ -182,7 +186,7 @@ var Validation = {
 	 *
 	 * @param {string} id
 	 */
-	clear_error_message: function(id)
+	clear_error_message: function (id)
 	{
 		var error = document.getElementById('error__' + id);
 
@@ -198,7 +202,7 @@ var Validation = {
 	 * @param {boolean|string|undefined} value
 	 * @returns Whether argument is true or false
 	 */
-	present: function(value, not)
+	present: function (value, not)
 	{
 		var bool;
 
@@ -225,7 +229,7 @@ var Validation = {
 	/**
 	 * Regular expressions for use with test() method
 	 * Add more with 'your_object.methods.expressions[name] = /^*$/'
- 	 */
+	 */
 	expressions: {
 		alphanumeric: /^([a-z0-9_\-])$/,                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
 		number: /^([0-9])+$/,                                                    // Characters 0-9 only of any length
@@ -243,7 +247,7 @@ var Validation = {
 	 * @param {string} regex
 	 * @return A boolean if test is performed or does not exist. Null if no value is present.
 	 */
-	test: function(value, regex)
+	test: function (value, regex)
 	{
 		if (!this.present(value, true))
 		{
@@ -266,7 +270,7 @@ var Validation = {
 	 * @param {string} value
 	 * @param {int} required
 	 */
-	minimum_length: function(value, required)
+	minimum_length: function (value, required)
 	{
 		if (!this.present(value))
 		{
@@ -282,7 +286,7 @@ var Validation = {
 	 * @param {string} value
 	 * @param {int} required
 	 */
-	maximum_length: function(value, required)
+	maximum_length: function (value, required)
 	{
 		if (!this.present(value))
 		{
@@ -298,7 +302,7 @@ var Validation = {
 	 * @param {string} value
 	 * @param {int} required
 	 */
-	greater_than: function(value, required)
+	greater_than: function (value, required)
 	{
 		if (!this.present(value))
 		{
@@ -314,7 +318,7 @@ var Validation = {
 	 * @param {string} value
 	 * @param {int} required
 	 */
-	less_than: function(value, required)
+	less_than: function (value, required)
 	{
 		if (!this.present(value))
 		{
@@ -330,10 +334,10 @@ var Validation = {
 	 * @param {string} value
 	 * @param {string} target_id
 	 */
-	match: function(value, target_id)
+	match: function (value, target_id)
 	{
-		var target = document.getElementById(target_id);
-		var match = target ? this.get_value(target) : null;
+		var target = document.getElementById(target_id),
+		    match = target ? this.get_value(target) : null;
 		return !! (value === match);
 	}
 };
@@ -346,10 +350,21 @@ var Validation = {
  * @param {object} opts
  * @return A new Validation object
  */
-// TODO: form name as well as ID?
 function Validate (form_id, model, opts)
 {
 	opts = opts || {};
+
+	/**
+	 * Prototypal inheritance operator support.
+	 * Douglas Crockford <http://javascript.crockford.com/prototypal.html>
+	 */
+	if (typeof Object.create !== 'function') {
+		Object.create = function (o) {
+			function F() {}
+			F.prototype = o;
+			return new F();
+		};
+	}
 
 	var validation = Object.create(Validation);
 	validation.init(form_id, model, opts);

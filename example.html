@@ -42,12 +42,9 @@
 		dd {
 			margin:0 0 1.5em;
 		}
-			dd dl {
-				margin-left:30px;
+			dd dt {
+				font-size:1em;
 			}
-				dd dt {
-					font-size:1em;
-				}
 
 	pre, code {
 		font-size:1.071em;
@@ -115,9 +112,9 @@
 
 		<h1>Simple Form Validation</h1>
 
-		<p>Prototypal form validation. Full docs coming soon.</p>
+		<p>Standalone, tiny and understandable Javascript form validation.</p>
 
-		<p>Tested in the following browsers:</p>
+		<p>To be fully tested in the following browsers:</p>
 
 		<ul>
 			<li>Firefox 3.6 and 4</li>
@@ -142,7 +139,15 @@
 			</dd>
 			<dt>Validation methods</dt>
 			<dd>
-				<p>This is an object in the format <code>{ method: argument }</code>. Current methods available are:</p>
+				<p>This is an object in the format <code>{ input: { method: arguments } }</code> where '<em>input</em>' is the ID of the
+				form input to validate; '<em>method</em>' is a reference to a validation method (listed below); and '<em>arguments</em>' is
+				an argument or array of arguments for the validation method.</p>
+
+				<p><strong>If you are specifying arguments as an array</strong> the last argument must be an error message string to
+				display for that method. If you do not wish to use individual error messages you must leave a blank string
+				(<code>''</code>) as the last value.</p>
+
+				<p>Validation methods available are:</p>
 
 				<dl>
 					<dt>present</dt>
@@ -190,13 +195,9 @@
 					<dd>A number is greater than argument. The argument is an integer.</dd>
 					<dt>less_than</dt>
 					<dd>A number is less than argument. The argument is an integer.</dd>
+					<dt>error</dt>
+					<dd>Define an error message to cover all validation methods. The argument is a string.</dd>
 				</dl>
-
-				<p>If an input has any validation methods applied to it an error message can be defined using the <code>error</code>
-				variable and a text string.</p>
-
-				<p><strong>Note:</strong> Currently only a single error message can be applied to each form input so choose your words
-				wisely.</p>
 			</dd>
 			<dt>Options</dt>
 			<dd>
@@ -206,7 +207,7 @@
 				<dl>
 					<dt>error_node</dt>
 					<dd>
-						<p>Node name to wrap error message with. The default is <code>'div'</code>.</p>
+						<p>HTML element to wrap error message with. The default is <code>'p'</code>.</p>
 					</dd>
 					<dt>error_class</dt>
 					<dd>
@@ -236,19 +237,26 @@
 			<dd>
 				<p>The <code>bind</code> method can be used to add more event listeners.</p>
 
-				<p><code>your_object.bind(function() {} );</code></p>
+				<p><code>check_this.bind(function() {} );</code></p>
 			</dd>
 			<dt>Retrieving individual error messages</dt>
 			<dd>
 				<p>Generated error messages are stored within the object and can be read using the input ID as the key.</p>
 
-				<p><code>your_object.errors.input_id;</code></dd>
+				<p><code>check_this.errors.input_id;</code>
+			</dd>
+			<dt>Retrieving individual input valid boolean</dt>
+			<dd>
+				<p>Input valid or invalid boolean is stored within the object and can be read using the input ID as the key.</p>
+
+				<p><code>check_this.valid.input_id;</code>
+			</dd>
 			<dt>Adding more regular expressions</dt>
 			<dd>
 				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
 				name as the key.</p>
 
-				<p><code>your_object.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
+				<p><code>check_this.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
 			</dd>
 		</dl>
 
@@ -295,18 +303,15 @@
 		<pre title="Javascript">
 	var test_validate = Validate('test', {
 		name: {
-			present: true,
-			error: 'Please enter your first name'
+			present: [true, 'Please enter your name']
 		},
 		email_address: {
-			present: true,
-			test: 'email',
-			error: 'Please enter your valid email address'
+			present: [true, 'Please enter your email address'],
+			test: ['email', 'Please enter a valid email address']
 		},
 		confirm_email: {
-			present: true,
-			match: 'email_address',
-			error: 'Please confirm your email address'
+			present: [true, 'Please confirm your email address'],
+			match: ['email_address', 'Your email address does not match']
 		},
 		date: {
 			present: true,
@@ -314,8 +319,7 @@
 			error: 'Please enter a valid date'
 		},
 		accept_terms: {
-			present: true,
-			error: 'You must accept the terms'
+			present: [true, 'You must accept the terms']
 		}
 	}, {});
 		</pre>
@@ -326,13 +330,11 @@
 	<script>
 	var test_validate = Validate('test', {
 		name: {
-			present: true,
-			error: 'Please enter your first name'
+			present: [true, 'Please enter your name']
 		},
 		email_address: {
-			present: true,
-			test: 'email',
-			error: 'Please enter your valid email address'
+			present: [true, 'Please enter your email address'],
+			test: ['email', 'Please enter a valid email address']
 		},
 		confirm_email: {
 			present: true,
@@ -345,8 +347,7 @@
 			error: 'Please enter a valid date'
 		},
 		accept_terms: {
-			present: true,
-			error: 'You must accept the terms'
+			present: [true, 'You must accept the terms']
 		}
 	}, {});
 	</script>
