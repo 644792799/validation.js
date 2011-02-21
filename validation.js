@@ -1,6 +1,6 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.0
+ * @version 0.9.3
  * @modified 21/02/2011
  */
 
@@ -35,10 +35,8 @@ var Validation = {
 		// Bind submit event listener to form
 		this.bind(function (event)
 		{
-			event = event || null;
-
 			self.form_valid = true;
-			self.errors = self.valid = [];
+			self.errors = self.valid = {};
 
 			// loop through form inputs
 			for (var input in self.model)
@@ -129,7 +127,7 @@ var Validation = {
 	 */
 	get_value: function (obj)
 	{
-		var type = false;
+		var type;
 
 		if (obj.nodeName.toLowerCase() == 'input')
 		{
@@ -166,7 +164,7 @@ var Validation = {
 		    msg.setAttribute('id', 'error__' + target.id);
 
 		var txt = document.createTextNode(message);
-		    msg.appendChild(txt);
+		msg.appendChild(txt);
 
 		var parent = target.parentNode;
 
@@ -241,22 +239,17 @@ var Validation = {
 	},
 
 	/**
-	 * Test value against regular expression
+	 * Test value string against regular expression
 	 *
 	 * @param {string} value
 	 * @param {string} regex
-	 * @return A boolean if test is performed or does not exist. Null if no value is present.
+	 * @return A boolean if test is performed or does not exist.
 	 */
 	test: function (value, regex)
 	{
-		if (!this.present(value, true))
-		{
-			return null;
-		}
-
 		if (this.expressions[regex])
 		{
-			return !! (this.expressions[regex]).test(value);
+			return !! (this.expressions[regex]).test(value.toString());
 		}
 		else
 		{
@@ -338,6 +331,7 @@ var Validation = {
 	{
 		var target = document.getElementById(target_id),
 		    match = target ? this.get_value(target) : null;
+
 		return !! (value === match);
 	}
 };
