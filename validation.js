@@ -1,7 +1,7 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.4
- * @modified 21/02/2011
+ * @version 0.9.5
+ * @modified 22/02/2011
  */
 
 var Validation = {
@@ -170,14 +170,13 @@ var Validation = {
 			return;
 		}
 
-		var msg = document.createElement(this.options.error_node);
-		    msg.setAttribute('class', this.options.error_class);
-		    msg.setAttribute('id', 'error__' + target.id);
+		var parent = target.parentNode,
+		    text = document.createTextNode(message),
+		    msg = document.createElement(this.options.error_node);
 
-		var txt = document.createTextNode(message);
-		msg.appendChild(txt);
-
-		var parent = target.parentNode;
+		msg.setAttribute('id', 'error__' + target.id);
+		msg.className = this.options.error_class;
+		msg.appendChild(text);
 
 		if (this.options.error_placement == 'before')
 		{
@@ -231,7 +230,7 @@ var Validation = {
 			bool = !! (value.length > 0);
 		}
 
-		// Optionally invert if checking for NOT present
+		// Invert boolean if checking for NOT present
 		return (not) ? bool : !bool;
 	},
 

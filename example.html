@@ -31,6 +31,10 @@
 		line-height:1.5;
 	}
 
+	ul {
+		list-style-position:inside;
+	}
+
 	dl {
 		margin:1em 0 1em 15px;
 	}
@@ -114,13 +118,14 @@
 
 		<p>Standalone, tiny and understandable Javascript form validation.</p>
 
-		<p>To be fully tested in the following browsers:</p>
+		<p>Fully tested in the following browsers:</p>
 
 		<ul>
 			<li>Firefox 3.6 and 4</li>
 			<li>Safari 5</li>
 			<li>Chrome 8 and 9</li>
-			<li>Internet Explorer 7, 8 and 9</li>
+			<li>Internet Explorer 6, 7, 8 and 9</li>
+			<li>Opera 11</li>
 		</ul>
 
 		<h2>Installation</h2>
@@ -201,8 +206,8 @@
 			</dd>
 			<dt>Options</dt>
 			<dd>
-				<p>Default options can be overwritten for each Validation instance. Currently all options are related to the display of
-				error messages:</p>
+				<p>Optional. Default options can be overwritten for each Validation instance. Currently all options are related to the
+				display of error messages:</p>
 
 				<dl>
 					<dt>error_node</dt>
@@ -326,7 +331,7 @@
 
 	</div>
 
-	<script src="validation.js"></script>
+	<script src="validation.min.js"></script>
 	<script>
 	var test_validate = Validate('test', {
 		name: {
