@@ -1,6 +1,6 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.8
+ * @version 0.9.7
  * @modified 03/03/2011
  */
 
