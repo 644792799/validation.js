@@ -159,8 +159,7 @@
 					<dd>Any value must or must not be present. The argument is a boolean.</dd>
 					<dt>test</dt>
 					<dd>
-						<p>Reference to regular expression. The argument is a string. Included expressions are:
-
+						<p>Reference to regular expression. The argument is a string. Included expressions are:</p>
 						<ul>
 							<li>
 								<dfn title="([a-z0-9_\-])"><code>alphanumeric</code></dfn>
@@ -183,8 +182,9 @@
 								URL with or without http(s)/www.
 							</li>
 							<li>
-								<dfn title="(([0-3])?[0-9]\-([0-1])?[0-9]\-([0-9][0-9])?[0-9][0-9])"><code>date</code></dfn>
-								UK date in format day-month-year with or without leading zeroes or century.
+								<dfn title="(([0-3][0-9]|[1-9])[\/\-\.]([0-1][0-9]|[1-9])[\/\-\.]([0-9][0-9])?[0-9][0-9])"><code>date</code></dfn>
+								Date in format 'day, month, year' with or without leading zeroes or century and separated by a point,
+								hyphen or forward slash.
 							</li>
 							<li>
 								<dfn title="(([0-2])?[0-9]:[0-5][0-9])"><code>time</code></dfn>
@@ -192,6 +192,9 @@
 							</li>
 						</ul>
 					</dd>
+					<dt>valid_date</dt>
+					<dd>Test if a string is a valid date. Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. Option to use US 
+					month/day/year format. The argument is a boolean.</dd>
 					<dt>minimum_length</dt>
 					<dd>A string is longer than argument characters. The argument is an integer.</dd>
 					<dt>maximum_length</dt>
@@ -208,7 +211,6 @@
 			<dd>
 				<p>Optional. Default options can be overwritten for each Validation instance. Currently all options are related to the
 				display of error messages:</p>
-
 				<dl>
 					<dt>error_node</dt>
 					<dd>
@@ -267,7 +269,7 @@
 
 		<h4>Example</h4>
 
-		<form id="test" action="" method="post">
+		<form id="test" action="" method="get">
 		<fieldset>
 
 			<div class="row">
@@ -320,7 +322,7 @@
 		},
 		date: {
 			present: true,
-			test: 'date',
+			valid_date: false,
 			error: 'Please enter a valid date'
 		},
 		accept_terms: {
@@ -348,7 +350,7 @@
 		},
 		date: {
 			present: true,
-			test: 'date',
+			valid_date: false,
 			error: 'Please enter a valid date'
 		},
 		accept_terms: {

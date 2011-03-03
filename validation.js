@@ -1,7 +1,7 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.5
- * @modified 22/02/2011
+ * @version 0.9.8
+ * @modified 03/03/2011
  */
 
 var Validation = {
@@ -239,13 +239,13 @@ var Validation = {
 	 * Add more with 'your_object.methods.expressions[name] = /^*$/'
 	 */
 	expressions: {
-		alphanumeric: /^([a-z0-9_\-])$/,                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
-		number: /^([0-9])+$/,                                                    // Characters 0-9 only of any length
-		text: /^(^[a-z])+$/,                                                     // Characters a-z of any length in either case
-		email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,              // TLD email address
-		url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/, // URL with or without http(s)/www
-		date: /^(([0-3])?[0-9]\-([0-1])?[0-9]\-([0-9][0-9])?[0-9][0-9])$/,       // UK date in format day-month-year with or without leading zeroes or century
-		time: /^(([0-2])?[0-9]:[0-5][0-9])$/                                     // Time in format hours:minutes with or without leading hour zero in 12 or 24 hour format
+		alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
+		number: /^([0-9])+$/,                                                                    // Characters 0-9 only of any length
+		text: /^(^[a-z])+$/,                                                                     // Characters a-z of any length in either case
+		email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,                              // TLD email address
+		url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/,                 // URL with or without http(s)/www
+		date: /^(([0-3][0-9]|[1-9])[\/\-\.]([0-1][0-9]|[1-9])[\/\-\.]([0-9][0-9])?[0-9][0-9])$/, // Date in format 'day, month, year' with or without leading zeroes or century and separated by a point, hyphen or forward slash
+		time: /^(([0-2])?[0-9]:[0-5][0-9])$/                                                     // Time in format hours:minutes with or without leading hour zero in 12 or 24 hour format
 	},
 
 	/**
@@ -265,6 +265,48 @@ var Validation = {
 		{
 			return false;
 		}
+	},
+
+	/**
+	 * Test if a string is a valid date
+	 *
+	 * Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc.
+	 *
+	 * @param {string} value
+	 */
+	valid_date: function (value, us)
+	{
+		us = !! us;
+
+		var parts, day, month, year;
+
+		// Split date into components
+		if (!(parts = value.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/)))
+		{
+			return false;
+		}
+
+		day = us ? parts[2] : parts[1];
+		month = us ? parts[1] : parts[2];
+		year = parts[3].length == 2 ? '' + '20' + parts[3] : parts[3];
+
+		// Test integers are within boundaries
+		if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100)
+		{
+			return false;
+		}
+		// Months with 30 days
+		else if (day > 30 && month == (4 || 6 || 9 || 11))
+		{
+			return false;
+		}
+		// February and leap years
+		else if (month == 2 && !(day <= 28 || (day == 29 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))))
+		{
+			return false;
+		}
+
+		return true;
 	},
 
 	/**
