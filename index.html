@@ -1,1 +1,364 @@
-My Github page
+<!doctype html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" />
+	<meta charset="utf-8" />
+
+	<title>Simple Form Validation</title>
+
+	<style>
+	body {
+		font-size:0.75em;
+		font-family:Arial, sans-serif;
+		color:#333;
+		background:#fff;
+	}
+
+	h1, h2, h3, h4, h5 {
+		line-height:1;
+	}
+		h1 {
+			font-size:2.33em;
+		}
+		h2, h3, h4, h5 {
+			font-size:1.5em;
+			margin:1.5em 0 0.5em;
+		}
+
+	p, ul, ol, pre {
+		margin:0 0 1em;
+		line-height:1.5;
+	}
+
+	ul {
+		list-style-position:inside;
+	}
+
+	dl {
+		margin:1em 0 1em 15px;
+	}
+		dt {
+			line-height:1.5;
+			font-size:1.143em;
+			font-weight:bold;
+		}
+		dd {
+			margin:0 0 1.5em;
+		}
+			dd dt {
+				font-size:1em;
+			}
+
+	pre, code {
+		font-size:1.071em;
+		font-family:Consolas, "Lucida Console", Monaco, monospace;
+		color:#80f;
+		cursor:help;
+	}
+		pre {
+			overflow:hidden;
+			background:#eee;
+		}
+
+	#content {
+		width:640px;
+		margin:20px auto;
+	}
+
+	/* Example styles */
+	label {
+		display:block;
+		line-height:1.5;
+		white-space:nowrap;
+	}
+
+	input, textarea {
+		width:240px;
+		height:1.2em;
+		padding:5px;
+		font:inherit;
+		color:#888;
+	}
+		input:focus, textarea:focus {
+			color:#000;
+		}
+		textarea {
+			height:6em;
+			resize:none;
+		}
+		.checkbox input, input[type=checkbox] {
+			float:left;
+			width:auto;
+			height:auto;
+			margin-right:10px;
+			padding:0;
+		}
+
+	.form_error {
+		clear:both;
+		color:#f00;
+	}
+
+	button {
+		padding:5px 6px;
+	}
+
+	.row {
+		margin-bottom:0.5em;
+	}
+	</style>
+
+</head>
+<body>
+
+	<div id="content">
+
+		<h1>Simple Form Validation</h1>
+
+		<p>Standalone, tiny and understandable Javascript form validation. No gimmicks, fluff or feature bloat. Written by
+		<a href="http://www.maketea.co.uk">Matt Hinchliffe</a>.</p>
+
+		<p>Fully tested in the following browsers:</p>
+
+		<ul>
+			<li>Firefox 3.6 and 4</li>
+			<li>Safari 5</li>
+			<li>Chrome 8 and 9</li>
+			<li>Internet Explorer 6, 7, 8 and 9</li>
+			<li>Opera 11</li>
+		</ul>
+
+		<h2>Installation</h2>
+
+		<p>Include the Javascript file (minified version recommended for production use) within your page and instantiate a new Validation
+		object using the <code>Validate()</code> constructor method.</p>
+
+		<p><code>var check_this = Validate('my_form', { methods }, { options });</code></p>
+
+		<p>The constructor takes 3 arguments:</p>
+
+		<dl>
+			<dt>Form ID</dt>
+			<dd>
+				<p>The ID string of your form for use with <code>document.getElementbyId</code>.</p>
+			</dd>
+			<dt>Validation methods</dt>
+			<dd>
+				<p>This is an object in the format <code>{ input: { method: arguments } }</code> where '<em>input</em>' is the ID of the
+				form input to validate; '<em>method</em>' is a reference to a validation method (listed below); and '<em>arguments</em>' is
+				an argument or array of arguments for the validation method.</p>
+
+				<p><strong>If you are specifying arguments as an array</strong> the last argument must be an error message string to
+				display for that method. If you do not wish to use individual error messages you must leave a blank string
+				(<code>''</code>) as the last value.</p>
+
+				<p>Validation methods available are:</p>
+
+				<dl>
+					<dt>present</dt>
+					<dd>Any value must or must not be present. The argument is a boolean.</dd>
+					<dt>test</dt>
+					<dd>
+						<p>Reference to regular expression. The argument is a string. Included expressions are:</p>
+						<ul>
+							<li>
+								<dfn title="([a-z0-9_\-])"><code>alphanumeric</code></dfn>
+								Characters a-z, 0-9, underscores and hyphens of any length in lowercase only.
+							</li>
+							<li>
+								<dfn title="([0-9])+"><code>number</code></dfn>
+								Characters 0-9 only of any length.
+							</li>
+							<li>
+								<dfn title="(^[a-z])+"><code>text</code></dfn>
+								Characters a-z of any length in either case.
+							</li>
+							<li>
+								<dfn title="^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})"><code>email</code></dfn>
+								TLD email address.
+							</li>
+							<li>
+								<dfn title="(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?"><code>url</code></dfn>
+								URL with or without http(s)/www.
+							</li>
+							<li>
+								<dfn title="(([0-3][0-9]|[1-9])[\/\-\.]([0-1][0-9]|[1-9])[\/\-\.]([0-9][0-9])?[0-9][0-9])"><code>date</code></dfn>
+								Date in format 'day, month, year' with or without leading zeroes or century and separated by a point,
+								hyphen or forward slash.
+							</li>
+							<li>
+								<dfn title="(([0-2])?[0-9]:[0-5][0-9])"><code>time</code></dfn>
+								Time in format hours:minutes with or without leading hour zero in 12 or 24 hour format.
+							</li>
+						</ul>
+					</dd>
+					<dt>valid_date</dt>
+					<dd>Test if a string is a valid date. Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. Option to use US 
+					month/day/year format. The argument is a boolean.</dd>
+					<dt>minimum_length</dt>
+					<dd>A string is longer than argument characters. The argument is an integer.</dd>
+					<dt>maximum_length</dt>
+					<dd>A string is less than argument characters. The argument is an integer.</dd>
+					<dt>greater_than</dt>
+					<dd>A number is greater than argument. The argument is an integer.</dd>
+					<dt>less_than</dt>
+					<dd>A number is less than argument. The argument is an integer.</dd>
+					<dt>error</dt>
+					<dd>Define an error message to cover all validation methods. The argument is a string.</dd>
+				</dl>
+			</dd>
+			<dt>Options</dt>
+			<dd>
+				<p>Optional. Default options can be overwritten for each Validation instance. Currently all options are related to the
+				display of error messages:</p>
+				<dl>
+					<dt>error_node</dt>
+					<dd>
+						<p>HTML element to wrap error message with. The default is <code>'p'</code>.</p>
+					</dd>
+					<dt>error_class</dt>
+					<dd>
+						<p>Class name string to apply to the error node. The default is <code>'form_error'</code>.</p>
+					</dd>
+					<dt>error_message</dt>
+					<dd>
+						<p>A default error message string for each invalid input.</p>
+					</dd>
+					<dt>error_display</dt>
+					<dd>
+						<p>Display errors boolean (you can always retrieve errors manually). The default is <code>true</code>.</p>
+					</dd>
+					<dt>error_placement</dt>
+					<dd>
+						<p>Show errors at the top or bottom of the inputs parent node (before|after). The default is <code>'after'</code></p>
+					</dd>
+				</dl>
+
+			</dd>
+		</dl>
+
+		<h3>Extending</h3>
+
+		<dl>
+			<dt>Add another method to execute on form submission</dt>
+			<dd>
+				<p>The <code>bind</code> method can be used to add more event listeners.</p>
+
+				<p><code>check_this.bind(function() {} );</code></p>
+			</dd>
+			<dt>Retrieving individual error messages</dt>
+			<dd>
+				<p>Generated error messages are stored within the object and can be read using the input ID as the key.</p>
+
+				<p><code>check_this.errors.input_id;</code>
+			</dd>
+			<dt>Retrieving individual input valid boolean</dt>
+			<dd>
+				<p>Input valid or invalid boolean is stored within the object and can be read using the input ID as the key.</p>
+
+				<p><code>check_this.valid.input_id;</code>
+			</dd>
+			<dt>Adding more regular expressions</dt>
+			<dd>
+				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
+				name as the key.</p>
+
+				<p><code>check_this.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
+			</dd>
+		</dl>
+
+		<h4>Example</h4>
+
+		<form id="test" action="" method="get">
+		<fieldset>
+
+			<div class="row">
+				<label for="name">Name</label>
+				<input type="text" id="name" name="name" />
+			</div>
+
+			<div class="row">
+				<label for="email_address">Email Address</label>
+				<input type="text" id="email_address" name="email-address" />
+			</div>
+
+			<div class="row">
+				<label for="confirm_email">Confirm Email Address</label>
+				<input type="text" id="confirm_email" name="confirm-email" />
+			</div>
+
+			<div class="row">
+				<label for="date">Date (d-m-yy or dd-mm-yyyy)</label>
+				<input type="text" id="date" name="date" />
+			</div>
+
+			<div class="row checkbox">
+				<label for="accept_terms" class="label-checkbox"><input type="checkbox" id="accept_terms" name="accept-terms" value="true" /> Accept terms</label>
+			</div>
+
+			<div class="row buttons">
+				<button name="submit" type="submit">Validate</button>
+			</div>
+
+		</fieldset>
+		</form>
+
+		<h5>Sample code</h5>
+
+		<p>The code below is used to validate the example form above.</p>
+
+		<pre title="Javascript">
+	var test_validate = Validate('test', {
+		name: {
+			present: [true, 'Please enter your name']
+		},
+		email_address: {
+			present: [true, 'Please enter your email address'],
+			test: ['email', 'Please enter a valid email address']
+		},
+		confirm_email: {
+			present: [true, 'Please confirm your email address'],
+			match: ['email_address', 'Your email address does not match']
+		},
+		date: {
+			present: true,
+			valid_date: false,
+			error: 'Please enter a valid date'
+		},
+		accept_terms: {
+			present: [true, 'You must accept the terms']
+		}
+	}, {});
+		</pre>
+
+	</div>
+
+	<script src="validation.min.js"></script>
+	<script>
+	var test_validate = Validate('test', {
+		name: {
+			present: [true, 'Please enter your name']
+		},
+		email_address: {
+			present: [true, 'Please enter your email address'],
+			test: ['email', 'Please enter a valid email address']
+		},
+		confirm_email: {
+			present: true,
+			match: 'email_address',
+			error: 'Please confirm your email address'
+		},
+		date: {
+			present: true,
+			valid_date: false,
+			error: 'Please enter a valid date'
+		},
+		accept_terms: {
+			present: [true, 'You must accept the terms']
+		}
+	}, {});
+	</script>
+
+</body>
+</html>
