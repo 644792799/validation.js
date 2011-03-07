@@ -184,8 +184,8 @@
 							</li>
 							<li>
 								<dfn title="(([0-3][0-9]|[1-9])[\/\-\.]([0-1][0-9]|[1-9])[\/\-\.]([0-9][0-9])?[0-9][0-9])"><code>date</code></dfn>
-								Date in format 'day, month, year' with or without leading zeroes or century and separated by a point,
-								hyphen or forward slash.
+								Date in day/month/year format with or without leading zeroes or century and separated by a point,
+								hyphen or forward slash. Use <code>valid_date</code> method to strictly test if date is valid.
 							</li>
 							<li>
 								<dfn title="(([0-2])?[0-9]:[0-5][0-9])"><code>time</code></dfn>
@@ -195,7 +195,7 @@
 					</dd>
 					<dt>valid_date</dt>
 					<dd>Test if a string is a valid date. Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. Option to use US 
-					month/day/year format. The argument is a boolean.</dd>
+					month/day/year format. The arguments in order are <code>usa</code> (boolean) and <code>separator</code> (string).</dd>
 					<dt>minimum_length</dt>
 					<dd>A string is longer than argument characters. The argument is an integer.</dd>
 					<dt>maximum_length</dt>
@@ -205,7 +205,7 @@
 					<dt>less_than</dt>
 					<dd>A number is less than argument. The argument is an integer.</dd>
 					<dt>error</dt>
-					<dd>Define an error message to cover all validation methods. The argument is a string.</dd>
+					<dd>Define an error message for all validation methods performed for an input. The argument is a string.</dd>
 				</dl>
 			</dd>
 			<dt>Options</dt>
@@ -289,7 +289,7 @@
 			</div>
 
 			<div class="row">
-				<label for="date">Date (d-m-yy or dd-mm-yyyy)</label>
+				<label for="date">Date in d-m-yy or dd-mm-yyyy format (optional)</label>
 				<input type="text" id="date" name="date" />
 			</div>
 
@@ -322,9 +322,7 @@
 			match: ['email_address', 'Your email address does not match']
 		},
 		date: {
-			present: true,
-			valid_date: false,
-			error: 'Please enter a valid date'
+			valid_date: [false, '-', 'Please enter a valid date']
 		},
 		accept_terms: {
 			present: [true, 'You must accept the terms']
@@ -350,9 +348,7 @@
 			error: 'Please confirm your email address'
 		},
 		date: {
-			present: true,
-			valid_date: false,
-			error: 'Please enter a valid date'
+			valid_date: [false, '-', 'Please enter a valid date']
 		},
 		accept_terms: {
 			present: [true, 'You must accept the terms']
