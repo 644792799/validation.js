@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 0.9.8
  * @modified 07/03/2011
@@ -60,7 +60,7 @@ var Validation = {
 				{
 					var error,
 					    is_array,
-					    arguments = self.model[input][method];
+					    args = self.model[input][method];
 
 					if (method != 'error')
 					{
@@ -74,26 +74,26 @@ var Validation = {
 						// Arrays return as objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
 						if (Array.isArray)
 						{
-							is_array = Array.isArray(arguments);
+							is_array = Array.isArray(args);
 						}
 						else
 						{
-							is_array = (Object.prototype.toString.call(arguments) === '[object Array]');
+							is_array = (Object.prototype.toString.call(args) === '[object Array]');
 						}
 
 						// Work out the error message to display
 						if (is_array)
 						{
-							error = arguments[arguments.length - 1] || self.options.error_message;
+							error = args[args.length - 1] || self.options.error_message;
 						}
 						else
 						{
 							error = self.model[input]['error'] || self.options.error_message;
-							arguments = [arguments];
+							args = [args];
 						}
 
 						// Test validation method
-						if (self[method].apply(self, [value].concat(arguments)) === false)
+						if (self[method].apply(self, [value].concat(args)) === false)
 						{
 							self.form_valid = self.valid[input] = false;
 							self.create_error_message(target, error);
@@ -302,9 +302,9 @@ var Validation = {
 		}
 
 		// Apply data to vars as integers and standardise days/months
-		day = parseInt(usa ? parts[2] : parts[1]);
-		month = parseInt(usa ? parts[1] : parts[2]);
-		year = parseInt(parts[3].length == 2 ? '' + '20' + parts[3] : parts[3]);
+		day = parseInt(usa ? parts[2] : parts[1], 10);
+		month = parseInt(usa ? parts[1] : parts[2], 10);
+		year = parseInt(parts[3].length == 2 ? '' + '20' + parts[3] : parts[3], 10);
 
 		// Test integers are within boundaries
 		if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100)
@@ -317,7 +317,7 @@ var Validation = {
 			return false;
 		}
 		// February and leap years
-		else if (month == 2 && !(day <= 28 || (day == 29 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))))
+		else if (month == 2 && !(day <= 28 || (day == 29 && (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)))))
 		{
 			return false;
 		}
