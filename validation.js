@@ -1,7 +1,7 @@
 /**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.7
- * @modified 03/03/2011
+ * @version 0.9.8
+ * @modified 07/03/2011
  */
 
 var Validation = {
@@ -208,6 +208,7 @@ var Validation = {
 	 * Test if any value is present or checked
 	 *
 	 * @param {boolean|string|undefined} value
+	 * @param {boolean} not
 	 * @returns Whether argument is true or false
 	 */
 	present: function (value, not)
@@ -253,10 +254,15 @@ var Validation = {
 	 *
 	 * @param {string} value
 	 * @param {string} regex
-	 * @return A boolean if test is performed or does not exist.
+	 * @return A boolean if test is performed or does not exist or null if no value is present
 	 */
 	test: function (value, regex)
 	{
+		if (!this.present(value, true))
+		{
+			return null;
+		}
+
 		if (this.expressions[regex])
 		{
 			return !! (this.expressions[regex]).test(value.toString());
@@ -273,30 +279,40 @@ var Validation = {
 	 * Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc.
 	 *
 	 * @param {string} value
+	 * @param {boolean} usa Use US month/day/year format
+	 * @param {string} separator
+	 * @return A boolean or null if no value is present
 	 */
-	valid_date: function (value, us)
+	valid_date: function (value, usa, separator)
 	{
-		us = !! us;
-
 		var parts, day, month, year;
 
-		// Split date into components
-		if (!(parts = value.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/)))
+		if (!this.present(value, true))
+		{
+			return null;
+		}
+
+		// Standardise date string with a new delimiter
+		value = value.split(separator || '-').join(',');
+
+		// Split date into components and validate format
+		if (!(parts = value.match(/^(\d{1,2})[,](\d{1,2})[,](\d{2,4})$/)))
 		{
 			return false;
 		}
 
-		day = us ? parts[2] : parts[1];
-		month = us ? parts[1] : parts[2];
-		year = parts[3].length == 2 ? '' + '20' + parts[3] : parts[3];
+		// Apply data to vars as integers and standardise days/months
+		day = parseInt(usa ? parts[2] : parts[1]);
+		month = parseInt(usa ? parts[1] : parts[2]);
+		year = parseInt(parts[3].length == 2 ? '' + '20' + parts[3] : parts[3]);
 
 		// Test integers are within boundaries
 		if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100)
 		{
 			return false;
 		}
-		// Months with 30 days
-		else if (day > 30 && month == (4 || 6 || 9 || 11))
+		// Months with only 30 days, mimics in_array()
+		else if (day > 30 && month in {4:'', 6:'', 9:'', 11:''})
 		{
 			return false;
 		}
@@ -317,7 +333,7 @@ var Validation = {
 	 */
 	minimum_length: function (value, required)
 	{
-		if (!this.present(value))
+		if (!this.present(value, true))
 		{
 			return null;
 		}
@@ -333,7 +349,7 @@ var Validation = {
 	 */
 	maximum_length: function (value, required)
 	{
-		if (!this.present(value))
+		if (!this.present(value, true))
 		{
 			return null;
 		}
@@ -349,7 +365,7 @@ var Validation = {
 	 */
 	greater_than: function (value, required)
 	{
-		if (!this.present(value))
+		if (!this.present(value, true))
 		{
 			return null;
 		}
@@ -365,7 +381,7 @@ var Validation = {
 	 */
 	less_than: function (value, required)
 	{
-		if (!this.present(value))
+		if (!this.present(value, true))
 		{
 			return null;
 		}
@@ -398,7 +414,7 @@ var Validation = {
  */
 function Validate (form_id, model, opts)
 {
-	opts = opts || {};
+	opts |= {};
 
 	var validation = Object.create(Validation);
 	validation.init(form_id, model, opts);
