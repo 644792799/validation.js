@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 
@@ -6,6 +6,10 @@
 	<meta charset="utf-8" />
 
 	<title>Simple Form Validation</title>
+
+	<meta name="keywords" content="form validation, Javascript, client side, front end, validate input, email address format, date validation, value present" /> 
+	<meta name="description" content="Standalone, tiny and understandable Javascript form validation. No gimmicks, fluff or feature bloat." /> 
+	<meta name="author" content="Matt Hinchliffe" />
 
 	<style>
 	body {
@@ -116,8 +120,10 @@
 
 		<h1>Simple Form Validation</h1>
 
-		<p>Standalone, tiny and understandable Javascript form validation. No gimmicks, fluff or feature bloat. Written by
-		<a href="http://www.maketea.co.uk">Matt Hinchliffe</a>.</p>
+		<p>Standalone, tiny and understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check for 
+		value present/empty, email address format, URLs, custom expressions and comprehensive date validation.</p>
+
+		<p>Written by <a href="http://www.maketea.co.uk">Matt Hinchliffe</a>, 2011.</p>
 
 		<p>Fully tested in the following browsers:</p>
 
@@ -325,9 +331,10 @@
 			valid_date: [false, '-', 'Please enter a valid date']
 		},
 		accept_terms: {
-			present: [true, 'You must accept the terms']
+			present: true,
+			error: 'You must accept the terms'
 		}
-	}, {});
+	});
 		</pre>
 
 	</div>
@@ -343,15 +350,15 @@
 			test: ['email', 'Please enter a valid email address']
 		},
 		confirm_email: {
-			present: true,
-			match: 'email_address',
-			error: 'Please confirm your email address'
+			present: [true, 'Please confirm your email address'],
+			match: ['email_address', 'Your email address does not match']
 		},
 		date: {
 			valid_date: [false, '-', 'Please enter a valid date']
 		},
 		accept_terms: {
-			present: [true, 'You must accept the terms']
+			present: true,
+			error: 'You must accept the terms'
 		}
 	}, {});
 	</script>
