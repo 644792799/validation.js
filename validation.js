@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.8
- * @modified 18/03/2011
+ * @version 0.9.9
+ * @modified 22/03/2011
  * @fileOverview Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
@@ -19,8 +19,6 @@
  */
 function Validate (form_id, model, opts)
 {
-	opts |= {};
-
 	var Validation = {
 
 		/**
@@ -32,10 +30,11 @@ function Validate (form_id, model, opts)
 			// Default options
 			this.options = {
 				error_node: opts.error_node || 'span',                              // Node to wrap error message with
-				error_class: opts.error_class || 'form_error',                      // Class to apply to error node
+				error_class: opts.error_class || 'error',                           // Class to apply to error node
+				error_list_class: opts.error_list_class || 'error_list',            // Class to apply to list of errors
 				error_display: opts.error_display !== false,                        // Display errors (you can always retrieve errors manually)
 				error_message: opts.error_message || 'The given value is invalid.', // Default error message to display
-				error_placement: opts.error_placement || 'after'                    // At the top|bottom of form or before|after the input parent node
+				error_placement: opts.error_placement || 'after'                    // Within a list (list-top|list-bottom) or before|after the input parent node
 			};
 
 			// Check target form is available and given model is a valid object
@@ -44,6 +43,7 @@ function Validate (form_id, model, opts)
 				return null;
 			}
 
+			this.id = form_id;
 			this.model = model;
 
 			// Keep scope reference when changing to DOM nodes
@@ -53,7 +53,11 @@ function Validate (form_id, model, opts)
 			this.bind(function (event)
 			{
 				self.form_valid = true;
-				self.errors = self.valid = {};
+				self.errors = {};
+				self.valid = {};
+
+				// Destroy previous error list if necessary
+				self.clear_error('list__' + self.id);
 
 				// loop through form inputs
 				for (var input in self.model)
@@ -66,18 +70,17 @@ function Validate (form_id, model, opts)
 						break;
 					}
 
+					// Remove any previous error messages
+					self.clear_error(input);
+
 					// Get the input value
 					var value = self.get_value(target);
-
-					// Remove any previous error
-					self.clear_error_message(input);
 
 					// Loop through validation methods for the input
 					for (var method in self.model[input])
 					{
 						var error,
-							is_array,
-							args = self.model[input][method];
+						    args = self.model[input][method];
 
 						if (method != 'error')
 						{
@@ -89,17 +92,7 @@ function Validate (form_id, model, opts)
 
 							// Check if given argument is an array
 							// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
-							if (Array.isArray)
-							{
-								is_array = Array.isArray(args);
-							}
-							else
-							{
-								is_array = (Object.prototype.toString.call(args) === '[object Array]');
-							}
-
-							// Get the error message to display
-							if (is_array)
+							if ((Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
 							{
 								error = args[args.length - 1] || self.options.error_message;
 							}
@@ -115,7 +108,7 @@ function Validate (form_id, model, opts)
 								self.form_valid = self.valid[input] = false;
 
 								// Create error message
-								self.create_error_message(target, error);
+								self.create_error(target, error);
 
 								break;
 							}
@@ -176,12 +169,41 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Create an error message
+		 * Error list
 		 *
-		 * @param {object} target list-top|list-bottom|before|after
+		 * @returns Error list node
+		 */
+		error_list: function ()
+		{
+			var list;
+
+			if (!(list = document.getElementById('list__' + this.id)))
+			{
+				list = document.createElement('ol');
+				list.setAttribute('id', 'list__' + this.id);
+				list.className = this.options.error_list_class;
+
+				if (this.options.error_placement == 'list-top')
+				{
+					var before = this.form.firstChild;
+					this.form.insertBefore(list, before);
+				}
+				else
+				{
+					this.form.appendChild(list);
+				}
+			}
+
+			return list;
+		},
+
+		/**
+		 * Create error
+		 *
+		 * @param {object} target
 		 * @param {string} message
 		 */
-		create_error_message: function (target, message)
+		create_error: function (target, message)
 		{
 			this.errors[target.id] = message;
 
@@ -191,12 +213,13 @@ function Validate (form_id, model, opts)
 				return;
 			}
 
-			// Check positioning
+			// Manage ordered list
 			if (this.options.error_placement == 'list-top' || this.options.error_placement == 'list-bottom')
 			{
-				var list =  document.createElement('ul');
+				var list = this.error_list();
 			}
 
+			// Create individual error nodes
 			var container = list || target.parentNode,
 			    text = document.createTextNode(message),
 			    node = list ? 'li' : this.options.error_node,
@@ -206,7 +229,7 @@ function Validate (form_id, model, opts)
 			msg.className = this.options.error_class;
 			msg.appendChild(text);
 
-			if (this.options.error_placement == 'before' || this.options.error_placement == 'top')
+			if (this.options.error_placement == 'before' || this.options.error_placement == 'list-top')
 			{
 				var before = container.firstChild;
 				container.insertBefore(msg, before);
@@ -218,11 +241,11 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Clear error message
+		 * Clear error
 		 *
 		 * @param {string} id
 		 */
-		clear_error_message: function (id)
+		clear_error: function (id)
 		{
 			var error = document.getElementById('error__' + id);
 
