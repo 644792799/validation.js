@@ -52,10 +52,6 @@ function Validate (form_id, model, opts)
 			// Bind submit event listener to form
 			this.bind(function (event)
 			{
-				self.form_valid = true;
-				self.errors = {};
-				self.valid = {};
-
 				// Destroy previous error list if necessary
 				self.clear_error('list__' + self.id);
 
@@ -105,12 +101,16 @@ function Validate (form_id, model, opts)
 							// Perform validation method
 							if (self[method].apply(self, [value].concat(args)) === false)
 							{
-								self.form_valid = self.valid[input] = false;
+								self.valid[input] = self.form_valid = false;
 
 								// Create error message
 								self.create_error(target, error);
 
 								break;
+							}
+							else
+							{
+								self.valid[input] = true;
 							}
 						}
 					}
@@ -229,7 +229,7 @@ function Validate (form_id, model, opts)
 			msg.className = this.options.error_class;
 			msg.appendChild(text);
 
-			if (this.options.error_placement == 'before' || this.options.error_placement == 'list-top')
+			if (this.options.error_placement == 'before' && !list)
 			{
 				var before = container.firstChild;
 				container.insertBefore(msg, before);
@@ -253,6 +253,28 @@ function Validate (form_id, model, opts)
 			{
 				error.parentNode.removeChild(error);
 			}
+		},
+
+		/**
+		 * Is valid
+		 *
+		 * @param {string} input
+		 * @returns boolean
+		 */
+		is_valid: function (input)
+		{
+			return !! (this.valid[input]);
+		},
+
+		/**
+		 * Get error
+		 *
+		 * @param {string} input
+		 * @returns error string
+		 */
+		get_error: function (input)
+		{
+			return this.errors[input] || undefined;
 		},
 
 		/**
@@ -454,7 +476,9 @@ function Validate (form_id, model, opts)
 				match = target ? this.get_value(target) : null;
 
 			return !! (value === match);
-		}
+		},
+
+		form_valid: true, errors: {}, valid: {}
 	};
 
 	var validation = Object.create(Validation);

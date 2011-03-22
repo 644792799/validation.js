@@ -282,24 +282,24 @@
 
 				<p><code>check_this.bind(function() {} );</code></p>
 			</dd>
-			<dt>Retrieving individual error messages</dt>
-			<dd>
-				<p>Generated error messages are stored within the object and can be read using the input ID as the key.</p>
-
-				<p><code>check_this.errors[input_id];</code>
-			</dd>
-			<dt>Retrieving individual input valid boolean</dt>
-			<dd>
-				<p>Input valid or invalid boolean is stored within the object and can be read using the input ID as the key.</p>
-
-				<p><code>check_this.valid[input_id];</code>
-			</dd>
 			<dt>Adding more regular expressions</dt>
 			<dd>
 				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
 				name as the key.</p>
 
 				<p><code>check_this.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
+			</dd>
+			<dt>Retrieving individual error messages</dt>
+			<dd>
+				<p>Error messages for individual inputs (if present) can be read using a simple method using the input ID as the argument.</p>
+
+				<p><code>check_this.get_error(input_id);</code>
+			</dd>
+			<dt>Retrieving individual input valid boolean</dt>
+			<dd>
+				<p>Individual input valid booleans can be read using a simple method using the input ID string as the argument:</p>
+
+				<p><code>check_this.is_valid(input_id)</code>
 			</dd>
 		</dl>
 
@@ -358,7 +358,7 @@
 			error: 'Please confirm your email address'
 		},
 		date: {
-			valid_date: [{usa: false, separator: '-'}, 'Please enter a valid date']
+			valid_date: [false, '-', 'Please enter a valid date']
 		},
 		'accept-terms': {
 			present: [true, 'You must accept the terms']
@@ -386,7 +386,7 @@
 			error: 'Please confirm your email address'
 		},
 		date: {
-			valid_date: [{usa: false, separator: '-'}, 'Please enter a valid date']
+			valid_date: [false, '-', 'Please enter a valid date']
 		},
 		'accept-terms': {
 			present: [true, 'You must accept the terms']
