@@ -160,18 +160,17 @@
 
 		<h3 id="methods">Validation methods</h3>
 
-		<p><strong>Please note</strong> that if you are specifying arguments as an array the last argument must be an error message string
-		to display for that method. If you do not wish to use the individual error messages you may leave a blank string or any value that
-		will be evaluated as false as the last array value.</p>
+		<p><strong>Please note</strong> that single arguments are written lietrally. Multiple arguments are written as an array (<code>[]</code>)
+		and objects (<code>{}</code>) are used to overwrite options. See the example below for more details.</p>
 
 		<dl>
 			<dt>present</dt>
 			<dd>
 
-				<p>Test if any value is present or checked. Arguments available are:</p>
+				<p>Test if any value is present or checked. Arguments are:</p>
 
 				<ol>
-					<li>Not. A value is (<code>true</code>) or is not (<code>false</code>) present.</li>
+					<li>A value is (<code>true</code>) or is not (<code>false</code>) present.</li>
 				</ol>
 
 			</dd>
@@ -179,11 +178,11 @@
 			<dt>test</dt>
 			<dd>
 
-				<p>Test a value string against a regular expression. Arguments available are:</p>
+				<p>Test a value string against a regular expression. Arguments are:</p>
 
 				<ol>
 					<li>
-						<p>Regular expression. A string reference to an expression. Expressions available are:</p>
+						<p>A reference to an expression (<code>string</code>). Expressions available are:</p>
 
 						<ul>
 							<li>
@@ -223,23 +222,60 @@
 			</dd>
 
 			<dt>valid_date</dt>
-			<dd>Test if a string is a valid date. Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. Option to use US
-			month/day/year format. The arguments in order are <code>usa</code> (boolean) and <code>separator</code> (string).</dd>
+			<dd>
+				<p>Test if a string is a valid date. Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. Option to use United
+				States month/day/year format. Arguments are:</p>
+
+				<ol>
+					<li>USA format (<code>boolean</code>)</li>
+					<li>Date separator (<code>string</code>). Optional. The default is a hyphen.</li>
+				</ol>
+			</dd>
 
 			<dt>minimum_length</dt>
-			<dd>A string is longer than argument characters. The argument is an integer.</dd>
+			<dd>
+				<p>Test if a string is longer than a set length. Arguments are:</p>
+
+				<ol>
+					<li>Minimum length (<code>integer</code>)</li>
+				</ol>
+			</dd>
 
 			<dt>maximum_length</dt>
-			<dd>A string is less than argument characters. The argument is an integer.</dd>
+			<dd>
+				<p>Test if a string is shorter than a set length. Arguments are:</p>
+
+				<ol>
+					<li>Maximum length (<code>integer</code>)</li>
+				</ol>
+			</dd>
 
 			<dt>greater_than</dt>
-			<dd>A number is greater than argument. The argument is an integer.</dd>
+			<dd>
+				<p>Test if a number is greater than a set figure. Arguments are:</p>
+
+				<ol>
+					<li>Greater than (<code>integer</code>)</li>
+				</ol>
+			</dd>
 
 			<dt>less_than</dt>
-			<dd>A number is less than argument. The argument is an integer.</dd>
+			<dd>
+				<p>Test if a number is less than a set figure. Arguments are:</p>
 
-			<dt>error</dt>
-			<dd>Define an error message for all validation methods performed for an input. The argument is a string.</dd>
+				<ol>
+					<li>Less than (<code>integer</code>)</li>
+				</ol>
+			</dd>
+
+			<dt>error_message</dt>
+			<dd>
+				<p>Define an error message for all validation methods performed for an input. Arguments are:</p>
+
+				<ol>
+					<li>Error string (<code>string</code>)</li>
+				</ol>
+			</dd>
 
 		</dl>
 
@@ -248,11 +284,12 @@
 		<dl>
 			<dt>error_node</dt>
 			<dd>
-				<p>HTML element to wrap error message with. The default is <code>'span'</code>.</p>
+				<p>HTML element to wrap error message with. The default is <code>'span'</code>. This is ignored if
+				<code>error_placement</code> option is set to a list.</p>
 			</dd>
 			<dt>error_class</dt>
 			<dd>
-				<p>Class name string to apply to the error node. The default is <code>'error'</code>.</p>
+				<p>Class name string to apply to the error message node. The default is <code>'error'</code>.</p>
 			</dd>
 			<dt>error_list_class</dt>
 			<dd>
@@ -264,12 +301,13 @@
 			</dd>
 			<dt>error_display</dt>
 			<dd>
-				<p>Display errors boolean (you can always retrieve errors manually). The default is <code>true</code>.</p>
+				<p>Display errors boolean (you can always retrieve errors manually with the <code>get_error</code> method). The default is
+				<code>true</code>.</p>
 			</dd>
 			<dt>error_placement</dt>
 			<dd>
-				<p>Show error messages within a list at the top of bottom of the form (<code>list-top</code>|<code>list-bottom</code>) or
-				as a sibling to the input (<code>before</code>|<code>after</code>. The default is <code>'after'</code>.</p>
+				<p>Show error messages within an ordered list at the top of bottom of the form (<code>list-top</code>|<code>list-bottom</code>)
+				or as a sibling to the input (<code>before</code>|<code>after</code>). The default is <code>'after'</code>.</p>
 			</dd>
 		</dl>
 
@@ -285,7 +323,7 @@
 			<dt>Adding more regular expressions</dt>
 			<dd>
 				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
-				name as the key.</p>
+				name as the key. E.G.</p>
 
 				<p><code>check_this.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
 			</dd>
@@ -346,22 +384,25 @@
 		<pre title="Javascript">
 	var test_validate = Validate('test', {
 		name: {
-			present: [true, 'Please enter your name']
+			present: true,
+			error_message: 'Please enter your name'
 		},
 		'email-address': {
-			present: [true, 'Please enter your email address'],
-			test: ['email', 'Please enter a valid email address']
+			present: {arguments: true, error_message: 'Please enter your email address'},
+			test: {arguments: 'email', error_message: 'Please enter a valid email address'}
 		},
 		'confirm-email': {
 			present: true,
 			match: 'email-address',
-			error: 'Please confirm your email address'
+			error_message: 'Please confirm your email address'
 		},
 		date: {
-			valid_date: [false, '-', 'Please enter a valid date']
+			valid_date: [false, '-'],
+			error_message: 'Please enter a valid date'
 		},
 		'accept-terms': {
-			present: [true, 'You must accept the terms']
+			present: true,
+			error_message: 'You must accept the terms'
 		}
 	}, {
 		error_placement:'list-top'
@@ -370,15 +411,16 @@
 
 	</div>
 
-	<script src="validation.js"></script>
+	<script src="validation.min.js"></script>
 	<script>
 	var test_validate = Validate('test', {
 		name: {
-			present: [true, 'Please enter your name']
+			present: true,
+			error: 'Please enter your name'
 		},
 		'email-address': {
-			present: [true, 'Please enter your email address'],
-			test: ['email', 'Please enter a valid email address']
+			present: {arguments: true, error: 'Please enter your email address'},
+			test: {arguments: 'email', error: 'Please enter a valid email address'}
 		},
 		'confirm-email': {
 			present: true,
@@ -386,10 +428,12 @@
 			error: 'Please confirm your email address'
 		},
 		date: {
-			valid_date: [false, '-', 'Please enter a valid date']
+			valid_date: [false, '-'],
+			error: 'Please enter a valid date'
 		},
 		'accept-terms': {
-			present: [true, 'You must accept the terms']
+			present: true,
+			error: 'You must accept the terms'
 		}
 	}, {
 		error_placement:'list-top'

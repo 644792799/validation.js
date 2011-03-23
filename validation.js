@@ -1,13 +1,12 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 0.9.9
- * @modified 22/03/2011
- * @fileOverview Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat.
+ * @modified 23/03/2011
+ * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
 //TODO: access to perform individual validation methods
 //TODO: provide onchange support?
-//TODO: adjust arguments, they're a bit lame
 
 /**
  * Validate constructor method
@@ -20,6 +19,12 @@
 function Validate (form_id, model, opts)
 {
 	var Validation = {
+
+		form_valid: true, errors: {}, valid: {},
+
+	/**
+	 Instantiation methods
+	 **/
 
 		/**
 		 * Instantiate Validation
@@ -75,10 +80,7 @@ function Validate (form_id, model, opts)
 					// Loop through validation methods for the input
 					for (var method in self.model[input])
 					{
-						var error,
-						    args = self.model[input][method];
-
-						if (method != 'error')
+						if (method != 'error_message')
 						{
 							// Check validation method is available
 							if (typeof self[method] !== 'function')
@@ -86,15 +88,18 @@ function Validate (form_id, model, opts)
 								break;
 							}
 
-							// Check if given argument is an array
-							// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
-							if ((Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
+							var args = self.model[input][method],
+							    error = args.error_message || (self.model[input].error || self.options.error_message);
+
+							// Make sure arguments are in an array
+							if (Object.prototype.toString.call(args) === '[object Object]')
 							{
-								error = args[args.length - 1] || self.options.error_message;
+								args = args.arguments;
 							}
-							else
+
+							// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
+							if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
 							{
-								error = self.model[input]['error'] || self.options.error_message;
 								args = [args];
 							}
 
@@ -143,30 +148,9 @@ function Validate (form_id, model, opts)
 			}
 		},
 
-		/**
-		 * Get an inputs value or status
-		 *
-		 * @param {object} obj
-		 * @return The target input value
-		 */
-		get_value: function (obj)
-		{
-			var type;
-
-			if (obj.nodeName.toLowerCase() == 'input')
-			{
-				type = obj.getAttribute('type');
-			}
-
-			if (type && (type == 'checkbox' || type == 'radio'))
-			{
-				return obj.checked ? true : false;
-			}
-			else
-			{
-				return obj.value !== undefined ? obj.value : false;
-			}
-		},
+	/**
+	 Error messaging
+	**/
 
 		/**
 		 * Error list
@@ -256,6 +240,17 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
+		 * Get error
+		 *
+		 * @param {string} input
+		 * @returns error string
+		 */
+		get_error: function (input)
+		{
+			return this.errors[input] || undefined;
+		},
+
+		/**
 		 * Is valid
 		 *
 		 * @param {string} input
@@ -266,15 +261,33 @@ function Validate (form_id, model, opts)
 			return !! (this.valid[input]);
 		},
 
+	/**
+	 Validation methods
+	 **/
+
 		/**
-		 * Get error
+		 * Get an inputs value or status
 		 *
-		 * @param {string} input
-		 * @returns error string
+		 * @param {object} obj
+		 * @return The target input value
 		 */
-		get_error: function (input)
+		get_value: function (obj)
 		{
-			return this.errors[input] || undefined;
+			var type;
+
+			if (obj.nodeName.toLowerCase() == 'input')
+			{
+				type = obj.getAttribute('type');
+			}
+
+			if (type && (type == 'checkbox' || type == 'radio'))
+			{
+				return obj.checked ? true : false;
+			}
+			else
+			{
+				return obj.value !== undefined ? obj.value : false;
+			}
 		},
 
 		/**
@@ -476,10 +489,12 @@ function Validate (form_id, model, opts)
 				match = target ? this.get_value(target) : null;
 
 			return !! (value === match);
-		},
-
-		form_valid: true, errors: {}, valid: {}
+		}
 	};
+
+	/**
+	 Object constructor
+	 **/
 
 	var validation = Object.create(Validation);
 	validation.init(form_id, model, opts);
@@ -488,9 +503,9 @@ function Validate (form_id, model, opts)
 }
 
 /**
- * Prototypal inheritance operator support
- * Douglas Crockford <http://javascript.crockford.com/prototypal.html>
- */
+ Prototypal inheritance operator support
+ Douglas Crockford <http://javascript.crockford.com/prototypal.html>
+ **/
 if (typeof Object.create !== 'function') {
 	Object.create = function (o) {
 		function F() {}
