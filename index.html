@@ -119,9 +119,9 @@
 		<h1>Simple Form Validation</h1>
 
 		<p>Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check
-		for value present/empty, email address format, URLs, custom expressions and comprehensive date validation. Version 0.9.9</p>
+		for value present/empty, email address format, URLs, custom expressions and comprehensive date validation.</p>
 
-		<p>Written by <a href="http://www.maketea.co.uk">Matt Hinchliffe</a> and fully tested in the following browsers:</p>
+		<p>Written by <a href="http://www.maketea.co.uk">Matt Hinchliffe</a> and should work in the following browsers:</p>
 
 		<ul>
 			<li>Firefox 3.6 and 4</li>
@@ -131,7 +131,8 @@
 			<li>Opera 11</li>
 		</ul>
 
-		<p><a href="https://github.com/i-like-robots/Form-Validation">Download Simple Form Validation</a></p>
+		<p><a href="https://github.com/i-like-robots/Form-Validation">View the full project on Github</a>. Please submit any issues you
+		find to help improve the project =)</p>
 
 		<h2>Installation</h2>
 
@@ -406,9 +407,7 @@
 			present: true,
 			error_message: 'You must accept the terms'
 		}
-	}, {
-		error_placement:'list-top'
-	});
+	}, { error_placement: 'list-top' });
 		</pre>
 
 	</div>
@@ -418,28 +417,26 @@
 	var test_validate = Validate('test', {
 		name: {
 			present: true,
-			error: 'Please enter your name'
+			error_message: 'Please enter your name'
 		},
 		'email-address': {
-			present: {arguments: true, error: 'Please enter your email address'},
-			test: {arguments: 'email', error: 'Please enter a valid email address'}
+			present: {arguments: true, error_message: 'Please enter your email address'},
+			test: {arguments: 'email', error_message: 'Please enter a valid email address'}
 		},
 		'confirm-email': {
 			present: true,
 			match: 'email-address',
-			error: 'Please confirm your email address'
+			error_message: 'Please confirm your email address'
 		},
 		date: {
 			valid_date: [false, '-'],
-			error: 'Please enter a valid date'
+			error_message: 'Please enter a valid date'
 		},
 		'accept-terms': {
 			present: true,
-			error: 'You must accept the terms'
+			error_message: 'You must accept the terms'
 		}
-	}, {
-		error_placement:'list-top'
-	});
+	}, { error_placement: 'list-top' });
 	</script>
 
 </body>
