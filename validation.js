@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 0.9.9
- * @modified 23/03/2011
+ * @modified 24/03/2011
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
@@ -89,7 +89,7 @@ function Validate (form_id, model, opts)
 							}
 
 							var args = self.model[input][method],
-							    error = args.error_message || (self.model[input].error || self.options.error_message);
+							    error = args.error_message || (self.model[input].error_message || self.options.error_message);
 
 							// Make sure arguments are in an array
 							if (Object.prototype.toString.call(args) === '[object Object]')
