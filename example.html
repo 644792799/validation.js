@@ -319,28 +319,38 @@
 		<dl>
 			<dt>Add another method to execute on form submission</dt>
 			<dd>
-				<p>The <code>bind</code> method can be used to add more event listeners.</p>
+				<p>The <code>bind</code> method can be used to add more event listeners using a method as the first argument and event as
+				the second:</p>
 
-				<p><code>check_this.bind(function() {} );</code></p>
+				<p><code>check_this.bind(function() {}, 'submit' );</code></p>
+			</dd>
+			<dt>Validate an input on blur</dt>
+			<dd>
+				<p>Individual inputs can be validated with a simple method using the input ID as the argument. This can be combined with
+				the bind method above to add validation on blur or change events:</p>
+
+				<p><code>check_this.validate(input_id);</code></p>
 			</dd>
 			<dt>Adding more regular expressions</dt>
 			<dd>
 				<p>The validation object comes with a number of basic regular expressions but more can be added using the new expression
-				name as the key. E.G.</p>
+				name as the key. E.G.:</p>
 
 				<p><code>check_this.expressions['slug'] = /[a-z0-9_]+?$/;</code></p>
 			</dd>
 			<dt>Retrieving individual error messages</dt>
 			<dd>
-				<p>Error messages for individual inputs (if present) can be read using a simple method using the input ID as the argument.</p>
+				<p>Once an input has been checked the individual error messages (if present) can be read using a simple method using the
+				input ID as the argument:</p>
 
 				<p><code>check_this.get_error(input_id);</code>
 			</dd>
 			<dt>Retrieving individual input valid boolean</dt>
 			<dd>
-				<p>Individual input valid booleans can be read using a simple method using the input ID string as the argument:</p>
+				<p>Once an input has been checked the individual input valid boolean can be read using a simple method using the input ID
+				string as the argument:</p>
 
-				<p><code>check_this.is_valid(input_id)</code>
+				<p><code>check_this.is_valid(input_id);</code>
 			</dd>
 		</dl>
 

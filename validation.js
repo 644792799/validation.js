@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 0.9.9
- * @modified 24/03/2011
+ * @version 1.0.0RC
+ * @modified 28/03/2011
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
@@ -65,14 +65,14 @@ function Validate (form_id, model, opts)
 				{
 					var target;
 
+					// Remove any previous error messages
+					self.clear_error(input);
+
 					// Check the input is available
 					if (!(target = document.getElementById(input)))
 					{
 						break;
 					}
-
-					// Remove any previous error messages
-					self.clear_error(input);
 
 					// Get the input value
 					var value = self.get_value(target);
@@ -128,7 +128,7 @@ function Validate (form_id, model, opts)
 				{
 					event.preventDefault();
 				}
-			});
+			}, 'submit');
 		},
 
 		/**
@@ -136,16 +136,26 @@ function Validate (form_id, model, opts)
 		 *
 		 * @param {function} handler
 		 */
-		bind: function (handler)
+		bind: function (handler, listener)
 		{
 			if (this.form.addEventListener)
 			{
-				this.form.addEventListener('submit', handler, false);
+				this.form.addEventListener(listener, handler, false);
 			}
 			else
 			{
-				this.form.attachEvent('onsubmit', handler);
+				this.form.attachEvent('on' + listener, handler);
 			}
+		},
+
+		/**
+		 * Validate an individual input
+		 *
+		 * @param {string} input
+		 */
+		validate: function (input)
+		{
+
 		},
 
 	/**
