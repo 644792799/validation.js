@@ -1,12 +1,9 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 1.0.0RC
- * @modified 28/03/2011
+ * @modified 30/03/2011
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
-
-//TODO: access to perform individual validation methods
-//TODO: provide onchange support?
 
 /**
  * Validate constructor method
@@ -32,6 +29,11 @@ function Validate (form_id, model, opts)
 		 */
 		init: function (form_id, model, opts)
 		{
+			if (opts === undefined)
+			{
+				opts = {};
+			}
+
 			// Default options
 			this.options = {
 				error_node: opts.error_node || 'span',                              // Node to wrap error message with
@@ -55,7 +57,7 @@ function Validate (form_id, model, opts)
 			var self = this;
 
 			// Bind submit event listener to form
-			this.bind(function (event)
+			this.bind(this.form, function (event)
 			{
 				// Destroy previous error list if necessary
 				self.clear_error('list__' + self.id);
@@ -63,62 +65,7 @@ function Validate (form_id, model, opts)
 				// loop through form inputs
 				for (var input in self.model)
 				{
-					var target;
-
-					// Remove any previous error messages
-					self.clear_error(input);
-
-					// Check the input is available
-					if (!(target = document.getElementById(input)))
-					{
-						break;
-					}
-
-					// Get the input value
-					var value = self.get_value(target);
-
-					// Loop through validation methods for the input
-					for (var method in self.model[input])
-					{
-						if (method != 'error_message')
-						{
-							// Check validation method is available
-							if (typeof self[method] !== 'function')
-							{
-								break;
-							}
-
-							var args = self.model[input][method],
-							    error = args.error_message || (self.model[input].error_message || self.options.error_message);
-
-							// Make sure arguments are in an array
-							if (Object.prototype.toString.call(args) === '[object Object]')
-							{
-								args = args.arguments;
-							}
-
-							// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
-							if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
-							{
-								args = [args];
-							}
-
-							// Perform validation method
-							if (self[method].apply(self, [value].concat(args)) === false)
-							{
-								self.valid[input] = self.form_valid = false;
-
-								// Create error message
-								self.create_error(target, error);
-
-								break;
-							}
-							else
-							{
-								self.valid[input] = true;
-							}
-						}
-					}
+					self.validate(input);
 				}
 
 				event.returnValue = self.form_valid;
@@ -136,26 +83,21 @@ function Validate (form_id, model, opts)
 		 *
 		 * @param {function} handler
 		 */
-		bind: function (handler, listener)
+		bind: function (target, handler, listener)
 		{
-			if (this.form.addEventListener)
+			if (typeof target === 'string')
 			{
-				this.form.addEventListener(listener, handler, false);
+				target = document.getElementById(target);
+			}
+
+			if (target.addEventListener)
+			{
+				target.addEventListener(listener, handler, false);
 			}
 			else
 			{
-				this.form.attachEvent('on' + listener, handler);
+				target.attachEvent('on' + listener, handler);
 			}
-		},
-
-		/**
-		 * Validate an individual input
-		 *
-		 * @param {string} input
-		 */
-		validate: function (input)
-		{
-
 		},
 
 	/**
@@ -276,6 +218,71 @@ function Validate (form_id, model, opts)
 	 **/
 
 		/**
+		 * Validate an input
+		 *
+		 * @param {string} input
+		 */
+		validate: function (input)
+		{
+			var target;
+
+			// Remove any previous error messages
+			this.clear_error(input);
+
+			// Check the input is available
+			if (!(target = document.getElementById(input)))
+			{
+				return;
+			}
+
+			// Get the input value
+			var value = this.get_value(target);
+
+			// Loop through validation methods for the input
+			for (var method in this.model[input])
+			{
+				if (method != 'error_message')
+				{
+					// Check validation method is available
+					if (typeof this[method] !== 'function')
+					{
+						break;
+					}
+
+					var args = this.model[input][method],
+					    error = args.error_message || (this.model[input].error_message || this.options.error_message);
+
+					// Make sure arguments are in an array
+					if (Object.prototype.toString.call(args) === '[object Object]')
+					{
+						args = args.arguments;
+					}
+
+					// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
+					if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
+					{
+						args = [args];
+					}
+
+					// Perform validation method
+					if (this[method].apply(this, [value].concat(args)) === false)
+					{
+						this.valid[input] = this.form_valid = false;
+
+						// Create error message
+						this.create_error(target, error);
+
+						break;
+					}
+					else
+					{
+						this.valid[input] = true;
+					}
+				}
+			}
+		},
+
+		/**
 		 * Get an inputs value or status
 		 *
 		 * @param {object} obj
@@ -337,7 +344,7 @@ function Validate (form_id, model, opts)
 		 */
 		expressions: {
 			alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
-			number: /^([0-9])+$/,                                                                    // Characters 0-9 only of any length
+			number: /^([0-9\-])+$/,                                                                    // Characters 0-9 only of any length
 			text: /^(^[a-z])+$/,                                                                     // Characters a-z of any length in either case
 			email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,                              // TLD email address
 			url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/,                 // URL with or without http(s)/www
