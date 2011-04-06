@@ -497,8 +497,7 @@ var test_change = Validate('form2', {
 		less_than: {arguments: 100, error_message: 'Please enter a value less than 100'}
 	}
 }, {});
-test_change.bind('integer', function()
-{
+test_change.bind('integer', function() {
 	test_change.validate('integer');
 }, 'change');
 			</pre>
@@ -512,8 +511,7 @@ test_change.bind('integer', function()
 					less_than: {arguments: 100, error_message: 'Please enter a value less than 100'}
 				}
 			}, {});
-			test_change.bind('integer', function()
-			{
+			test_change.bind('integer', function() {
 				test_change.validate('integer');
 			}, 'change');
 			</script>
