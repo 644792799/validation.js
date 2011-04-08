@@ -96,6 +96,7 @@
 			color:#000;
 		}
 		textarea {
+			display:block;
 			height:6em;
 			resize:none;
 		}
@@ -247,18 +248,18 @@
 				</ol>
 			</dd>
 
-			<dt>minimum_length</dt>
+			<dt>longer_than</dt>
 			<dd>
-				<p>Test if a string is longer than a set length. Arguments are:</p>
+				<p>Test if a string is longer than or equal to a set length. Arguments are:</p>
 
 				<ol>
 					<li>Minimum length (<code>integer</code>)</li>
 				</ol>
 			</dd>
 
-			<dt>maximum_length</dt>
+			<dt>shorter_than</dt>
 			<dd>
-				<p>Test if a string is shorter than a set length. Arguments are:</p>
+				<p>Test if a string is shorter than or equal to a set length. Arguments are:</p>
 
 				<ol>
 					<li>Maximum length (<code>integer</code>)</li>
@@ -396,6 +397,11 @@
 					<input type="text" id="date" name="date" />
 				</div>
 
+				<div class="row textarea">
+					<label for="message">Message</label>
+					<textarea id="message" name="message" cols="10" rows="6"></textarea>
+				</div>
+
 				<div class="row checkbox">
 					<label for="accept-terms" class="label-checkbox"><input type="checkbox" id="accept-terms" name="accept-terms" value="true" /> Accept terms</label>
 				</div>
@@ -424,13 +430,19 @@ var test_validate = Validate('form1', {
 		match: 'email-address',
 		error_message: 'Please confirm your email address'
 	},
-	date: {
+	'date': {
 		valid_date: [false, '-'],
 		error_message: 'Please enter a valid date'
 	},
 	'accept-terms': {
 		present: true,
 		error_message: 'You must accept the terms'
+	}
+	,
+	message: {
+		present: true,
+		longer_than: 10,
+		error_message: 'Please enter a message'
 	}
 }, { error_placement: 'list-top' });
 			</pre>
@@ -450,13 +462,19 @@ var test_validate = Validate('form1', {
 					match: 'email-address',
 					error_message: 'Please confirm your email address'
 				},
-				date: {
+				'date': {
 					valid_date: [false, '-'],
 					error_message: 'Please enter a valid date'
 				},
 				'accept-terms': {
 					present: true,
 					error_message: 'You must accept the terms'
+				}
+				,
+				message: {
+					present: true,
+					longer_than: 10,
+					error_message: 'Please enter a message'
 				}
 			}, { error_placement: 'list-top' });
 			</script>

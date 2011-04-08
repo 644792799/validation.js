@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 1.0.0RC 2
- * @modified 06/04/2011
+ * @version 1.0.0RC 3
+ * @modified 08/04/2011
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
@@ -438,7 +438,7 @@ function Validate (form_id, model, opts)
 		 * @param {string} value
 		 * @param {int} required
 		 */
-		minimum_length: function (value, required)
+		longer_than: function (value, required)
 		{
 			if (!this.present(value, true))
 			{
@@ -454,7 +454,7 @@ function Validate (form_id, model, opts)
 		 * @param {string} value
 		 * @param {int} required
 		 */
-		maximum_length: function (value, required)
+		shorter_than: function (value, required)
 		{
 			if (!this.present(value, true))
 			{
