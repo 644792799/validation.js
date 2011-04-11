@@ -129,10 +129,11 @@
 
 	<div id="content">
 
-		<h1>Simple Form Validation</h1>
+		<h1>Validation.js</h1>
 
 		<p>Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check
-		for value present/empty, email address format, URLs, custom expressions and comprehensive date validation.</p>
+		for value present/empty, email address format, URLs, custom expressions and comprehensive date validation. Validatating forms isn't
+		fun but hopefully <a href="http://i-like-robots.github.com/Form-Validation/">validation.js</a> makes it less of a pain.</p>
 
 		<p>Written by <a href="http://www.maketea.co.uk">Matt Hinchliffe</a> and should work in the following browsers:</p>
 
@@ -163,30 +164,29 @@
 			</dd>
 			<dt>Validation methods</dt>
 			<dd>
-				<p>This is an object in the format <code>{ input: { method: arguments } }</code> where '<em>input</em>' is the ID of the
-				form input to validate; '<em>method</em>' is a reference to a validation method (listed below) and '<em>arguments</em>' is
-				a single argument or array of arguments for the validation method. <a href="#methods">See validation methods</a>.</p>
+				<p>This is an object in the format <code>{ input: { method: arguments } }</code> where <em>input</em> is the ID of the
+				form input to validate; <em>method</em> is a reference to a validation method (listed below) and <em>arguments</em> is the 
+				arguments for the validation method. <a href="#methods">See validation methods</a>.</p>
 			</dd>
 			<dt>Options</dt>
 			<dd>
-				<p>Optional. Default options can be overwritten for each Validation instance. All options are related to the
-				display of error messages. <a href="#options">See options</a>.</p>
+				<p>Optional. Default options can be overwritten for each Validation instance. <a href="#options">See options</a>.</p>
 			</dd>
 		</dl>
 
 		<h3 id="methods">Validation methods</h3>
 
-		<p><strong>Please note</strong> that single arguments are written lietrally. Multiple arguments are written as an array (<code>[]</code>)
-		and objects (<code>{}</code>) are used to overwrite options. See the example below for more details.</p>
+		<p><strong>Please note</strong> that single arguments are written literally. Multiple arguments are written as an array (<code>[]</code>)
+		and objects (<code>{}</code>) are used to supply arguments and overwrite options. See the examples below for more details.</p>
 
 		<dl>
 			<dt>present</dt>
 			<dd>
 
-				<p>Test if any value is present or checked. Arguments are:</p>
+				<p>Test if any value has been entered or option checked. Arguments are:</p>
 
 				<ol>
-					<li>A value is (<code>true</code>) or is not (<code>false</code>) present.</li>
+					<li>Any value is (<code>true</code>) or is not (<code>false</code>) present or checked.</li>
 				</ol>
 
 			</dd>
@@ -194,7 +194,7 @@
 			<dt>test</dt>
 			<dd>
 
-				<p>Test a value string against a regular expression. Arguments are:</p>
+				<p>Test a user inputted value against a regular expression. Arguments are:</p>
 
 				<ol>
 					<li>
@@ -206,7 +206,7 @@
 								Characters a-z, 0-9, underscores and hyphens of any length in lowercase only.
 							</li>
 							<li>
-								<dfn title="([0-9])+"><code>number</code></dfn>
+								<dfn title="([0-9\-])+"><code>number</code></dfn>
 								Characters 0-9 only of any length.
 							</li>
 							<li>
@@ -219,7 +219,7 @@
 							</li>
 							<li>
 								<dfn title="(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?"><code>url</code></dfn>
-								URL with or without http(s)/www.
+								URL with or without http(s) and/or www.
 							</li>
 							<li>
 								<dfn title="(([0-3][0-9]|[1-9])[\/\-\.]([0-1][0-9]|[1-9])[\/\-\.]([0-9][0-9])?[0-9][0-9])"><code>date</code></dfn>
@@ -243,7 +243,7 @@
 				States month/day/year format. Arguments are:</p>
 
 				<ol>
-					<li>USA format (<code>boolean</code>)</li>
+					<li>Use USA format (<code>boolean</code>)</li>
 					<li>Date separator (<code>string</code>). Optional. The default is a hyphen.</li>
 				</ol>
 			</dd>
@@ -286,7 +286,7 @@
 
 			<dt>error_message</dt>
 			<dd>
-				<p>Define an error message for all validation methods performed for an input. Arguments are:</p>
+				<p>Define an error message for all validation methods performed on an input. Arguments are:</p>
 
 				<ol>
 					<li>Error string (<code>string</code>)</li>
@@ -330,19 +330,20 @@
 		<h4 id="extending">Extending</h4>
 
 		<dl>
-			<dt>Add another method to execute on form submission</dt>
+			<dt>Add event listeners</dt>
 			<dd>
-				<p>The <code>bind</code> method can be used to add more event listeners using a method as the first argument and event as
-				the second:</p>
+				<p>The <code>bind</code> method can be used to add more event listeners. The first argument is the event name, the second
+				the method you wish to execute and an optional third parameter can be an ID string or DOM object to bind the event to if
+				not listening to the form itself:</p>
 
-				<p><code>check_this.bind(function() {}, 'submit' );</code></p>
+				<p><code>check_this.bind('submit', function() {});</code></p>
 			</dd>
-			<dt>Validate an input on blur</dt>
+			<dt>Validate an input individually</dt>
 			<dd>
 				<p>Individual inputs can be validated with a simple method using the input ID as the argument. This can be combined with
-				the bind method above to add validation on blur or change events:</p>
+				the bind method above to add validation to inputs on custom events:</p>
 
-				<p><code>check_this.validate(input_id);</code></p>
+				<p><code>check_this.validate('input_ID');</code></p>
 			</dd>
 			<dt>Adding more regular expressions</dt>
 			<dd>
@@ -416,7 +417,7 @@
 			<p>The code below is used to validate the example form above.</p>
 
 			<pre title="Javascript">
-var test_validate = Validate('form1', {
+var validation_rules = {
 	name: {
 		present: true,
 		error_message: 'Please enter your name'
@@ -434,21 +435,26 @@ var test_validate = Validate('form1', {
 		valid_date: [false, '-'],
 		error_message: 'Please enter a valid date'
 	},
-	'accept-terms': {
-		present: true,
-		error_message: 'You must accept the terms'
-	}
-	,
 	message: {
 		present: true,
 		longer_than: 10,
 		error_message: 'Please enter a message'
+	},
+	'accept-terms': {
+		present: true,
+		error_message: 'You must accept the terms'
 	}
-}, { error_placement: 'list-top' });
+};
+
+var validation_options = {
+	error_placement: 'list-top'
+};
+
+var test_validate = Validate('form1', validation_rules, validation_options);
 			</pre>
 
 			<script>
-			var test_validate = Validate('form1', {
+			var validation_rules = {
 				name: {
 					present: true,
 					error_message: 'Please enter your name'
@@ -466,17 +472,22 @@ var test_validate = Validate('form1', {
 					valid_date: [false, '-'],
 					error_message: 'Please enter a valid date'
 				},
+				message: {
+					present: true,
+					longer_than: 3,
+					error_message: 'Please enter a message'
+				},
 				'accept-terms': {
 					present: true,
 					error_message: 'You must accept the terms'
 				}
-				,
-				message: {
-					present: true,
-					longer_than: 10,
-					error_message: 'Please enter a message'
-				}
-			}, { error_placement: 'list-top' });
+			};
+
+			var validation_options = {
+				error_placement: 'list-top'
+			};
+
+			var test_validate = Validate('form1', validation_rules, validation_options);
 			</script>
 
 		</div>
@@ -507,6 +518,7 @@ var test_validate = Validate('form1', {
 			<p>The code below is used to validate the example form above.</p>
 
 			<pre title="Javascript">
+// Setup form validation
 var test_change = Validate('form2', {
 	'integer': {
 		present: {arguments: true, error_message: 'Please enter a value'},
@@ -515,12 +527,15 @@ var test_change = Validate('form2', {
 		less_than: {arguments: 100, error_message: 'Please enter a value less than 100'}
 	}
 }, {});
-test_change.bind('integer', function() {
+
+// Setup individual validation on change event
+test_change.bind('change', function() {
 	test_change.validate('integer');
-}, 'change');
+}, 'integer');
 			</pre>
 
 			<script>
+			// Setup form validation
 			var test_change = Validate('form2', {
 				'integer': {
 					present: {arguments: true, error_message: 'Please enter a value'},
@@ -529,9 +544,11 @@ test_change.bind('integer', function() {
 					less_than: {arguments: 100, error_message: 'Please enter a value less than 100'}
 				}
 			}, {});
-			test_change.bind('integer', function() {
+
+			// Setup individual validation on change event
+			test_change.bind('change', function() {
 				test_change.validate('integer');
-			}, 'change');
+			}, 'integer');
 			</script>
 
 		</div>

@@ -1,7 +1,8 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 1.0.0RC 3
+ * @version 1.0.0RC 4
  * @modified 08/04/2011
+ * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
@@ -57,7 +58,7 @@ function Validate (form_id, model, opts)
 			var self = this;
 
 			// Bind submit event listener to form
-			this.bind(this.form, function (event)
+			this.bind('submit', function (event)
 			{
 				self.form_valid = true;
 
@@ -77,16 +78,20 @@ function Validate (form_id, model, opts)
 				{
 					event.preventDefault();
 				}
-			}, 'submit');
+			});
 		},
 
 		/**
 		 * Bind method to target form submit event
 		 *
-		 * @param {function} handler
+		 * @param {string} listener Event listener
+		 * @param {function} handler Method to execute on event
+		 * @param {string|object} target ID string or DOM object reference
 		 */
-		bind: function (target, handler, listener)
+		bind: function (listener, handler, target)
 		{
+			target = target || this.form;
+
 			if (typeof target === 'string')
 			{
 				target = document.getElementById(target);
@@ -220,7 +225,7 @@ function Validate (form_id, model, opts)
 	 **/
 
 		/**
-		 * Validate an input
+		 * Validate input
 		 *
 		 * @param {string} input
 		 */
@@ -346,7 +351,7 @@ function Validate (form_id, model, opts)
 		 */
 		expressions: {
 			alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
-			number: /^([0-9\-])+$/,                                                                    // Characters 0-9 only of any length
+			number: /^([0-9\-])+$/,                                                                  // Characters 0-9 only of any length
 			text: /^(^[a-z])+$/,                                                                     // Characters a-z of any length in either case
 			email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,                              // TLD email address
 			url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/,                 // URL with or without http(s)/www
@@ -433,35 +438,35 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Minimum string length
+		 * String is longer than
 		 *
 		 * @param {string} value
-		 * @param {int} required
+		 * @param {int} length
 		 */
-		longer_than: function (value, required)
+		longer_than: function (value, length)
 		{
 			if (!this.present(value, true))
 			{
 				return null;
 			}
 
-			return !! (value.length >= required);
+			return !! (value.length >= length);
 		},
 
 		/**
-		 * Maximum string length
+		 * String is shorter than
 		 *
 		 * @param {string} value
-		 * @param {int} required
+		 * @param {int} length
 		 */
-		shorter_than: function (value, required)
+		shorter_than: function (value, length)
 		{
 			if (!this.present(value, true))
 			{
 				return null;
 			}
 
-			return !! (value.length <= required);
+			return !! (value.length <= length);
 		},
 
 		/**
