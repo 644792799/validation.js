@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 1.0.0RC 4
- * @modified 08/04/2011
+ * @version 1.0.0
+ * @modified 27/04/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -310,6 +310,7 @@ function Validate (form_id, model, opts)
 			}
 			else
 			{
+				// Return value and trim white space
 				return obj.value !== undefined ? obj.value.replace(/^\s\s*/, '').replace(/\s\s*$/, '') : false;
 			}
 		},
@@ -317,9 +318,9 @@ function Validate (form_id, model, opts)
 		/**
 		 * Test if any value is present or checked
 		 *
-		 * @param {boolean|string|undefined} value
+		 * @param {mixed} value
 		 * @param {boolean} not
-		 * @returns Whether argument is true or false
+		 * @returns Boolean
 		 */
 		present: function (value, not)
 		{
@@ -341,7 +342,7 @@ function Validate (form_id, model, opts)
 				bool = !! (value.length > 0);
 			}
 
-			// Invert boolean if checking for NOT present
+			// Invert boolean if checking for not present
 			return (not) ? bool : !bool;
 		},
 
@@ -386,16 +387,17 @@ function Validate (form_id, model, opts)
 		/**
 		 * Test if a string is a valid date
 		 *
-		 * Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc.
+		 * Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. The Javascript Date object is useless in this 
+		 * instance as an invalid date of 32/13/11 would be 'rounded' up as 1/2/12
 		 *
 		 * @param {string} value
 		 * @param {boolean} usa Use US month/day/year format
-		 * @param {string} separator
+		 * @param {string} delimiter
 		 * @return A boolean or null if no value is present
 		 * @example
 		 * valid_date: [false, '/', 'Please enter a valid date']
 		 */
-		valid_date: function (value, usa, separator)
+		valid_date: function (value, usa, delimiter)
 		{
 			var parts, day, month, year;
 
@@ -405,7 +407,7 @@ function Validate (form_id, model, opts)
 			}
 
 			// Standardise date string with a new delimiter
-			value = value.split(separator || '-').join(',');
+			value = value.split(delimiter || '-').join(',');
 
 			// Split date into components and validate format
 			if (!(parts = value.match(/^(\d{1,2})[,](\d{1,2})[,](\d{2,4})$/)))
@@ -445,12 +447,7 @@ function Validate (form_id, model, opts)
 		 */
 		longer_than: function (value, length)
 		{
-			if (!this.present(value, true))
-			{
-				return null;
-			}
-
-			return !! (value.length >= length);
+			return (value.toString().length >= length);
 		},
 
 		/**
@@ -461,48 +458,112 @@ function Validate (form_id, model, opts)
 		 */
 		shorter_than: function (value, length)
 		{
-			if (!this.present(value, true))
-			{
-				return null;
-			}
-
-			return !! (value.length <= length);
+			return (value.toString().length <= length);
 		},
 
 		/**
-		 * Integer is greater than
+		 * Number is an integer
 		 *
-		 * @param {string} value
-		 * @param {int} required
+		 * For a round-up on testing for intergers see <http://bit.ly/aOpiDa>
+		 *
+		 * @param {number} value
+		 * @param {boolean} not
+		 */
+		is_int: function (value, not)
+		{
+			var bool = !! ((parseFloat(value) == parseInt(value)) && !isNaN(value));
+
+			// Invert boolean if checking for NOT an integer
+			return (not) ? bool : !bool;
+		},
+
+		/**
+		 * Number is greater than
+		 *
+		 * @param value
+		 * @param required
 		 */
 		greater_than: function (value, required)
 		{
-			if (!this.present(value, true))
-			{
-				return null;
-			}
-
-			return !! (parseInt(value, 10) >= required);
+			return this.compare_numbers(value, required, '>=');
 		},
 
 		/**
-		 * Integer is less than
+		 * Number is less than
 		 *
-		 * @param {string} value
-		 * @param {int} required
+		 * @param value
+		 * @param required
 		 */
 		less_than: function (value, required)
+		{
+			return this.compare_numbers(value, required, '<=');
+		},
+
+		/**
+		 * Compare two numbers
+		 *
+		 * @param value
+		 * @param required
+		 * @param {string} operator
+		 * 
+		 */
+		compare_numbers: function (value, required, operator)
 		{
 			if (!this.present(value, true))
 			{
 				return null;
 			}
 
-			return !! (parseInt(value, 10) <= required);
+			// Make sure we're working with a number primitive
+			required = new Number(required).valueOf();
+			value = new Number(value).valueOf();
+
+			if (value === NaN || required === NaN)
+			{
+				return false;
+			}
+
+			switch (operator)
+			{
+				// Value is greater than
+				case '>' :
+					return (value > required);
+					break;
+
+				// Value is greater or equal to
+				case '>=' :
+					return (value >= required);
+					break;
+
+				// Value is less than
+				case '<' :
+					return (value < required);
+					break;
+
+				// Value is less than or equal to
+				case '<=' :
+					return (value <= required);
+					break;
+
+				// Value is a factor of
+				case '%':
+					return (value % required == 0);
+					break;
+
+				// Value does is not equal to
+				case '!=' :
+					return (value != required);
+					break;
+
+				// Value is equal to
+				default: /* == */
+					return (value == required);
+					break;
+			}
 		},
 
 		/**
-		 * Fields match
+		 * Compare input values
 		 *
 		 * @param {string} value
 		 * @param {string} target_id
@@ -510,7 +571,7 @@ function Validate (form_id, model, opts)
 		match: function (value, target_id)
 		{
 			var target = document.getElementById(target_id),
-				match = target ? this.get_value(target) : null;
+			    match = target ? this.get_value(target) : null;
 
 			return !! (value === match);
 		}
