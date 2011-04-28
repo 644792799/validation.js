@@ -271,7 +271,13 @@ function Validate (form_id, model, opts)
 						args = [args];
 					}
 
-					// Perform validation method
+					// Perform validation method if a value is present
+					// TODO: Sort this out. Required is an option https://github.com/i-like-robots/Form-Validation/issues/4
+					if (!this.present(value, true))
+					{
+						return null;
+					}
+
 					if (this[method].apply(this, [value].concat(args)) === false)
 					{
 						this.valid[input] = this.form_valid = false;
@@ -352,7 +358,6 @@ function Validate (form_id, model, opts)
 		 */
 		expressions: {
 			alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
-			number: /^([0-9\-])+$/,                                                                  // Characters 0-9 only of any length
 			text: /^(^[a-z])+$/,                                                                     // Characters a-z of any length in either case
 			email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,                              // TLD email address
 			url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/,                 // URL with or without http(s)/www
@@ -400,11 +405,6 @@ function Validate (form_id, model, opts)
 		valid_date: function (value, usa, delimiter)
 		{
 			var parts, day, month, year;
-
-			if (!this.present(value, true))
-			{
-				return null;
-			}
 
 			// Standardise date string with a new delimiter
 			value = value.split(delimiter || '-').join(',');
@@ -478,6 +478,21 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
+		 * Value is a number
+		 *
+		 * @param {number} value
+		 * @param {boolean} not
+		 */
+		is_number: function (value, not)
+		{
+			var test = new Number(value).valueOf();
+			    bool = !! (test !== NaN);
+
+			// Invert boolean if checking for NOT an integer
+			return (not) ? bool : !bool;
+		},
+		
+		/**
 		 * Number is greater than
 		 *
 		 * @param value
@@ -509,11 +524,6 @@ function Validate (form_id, model, opts)
 		 */
 		compare_numbers: function (value, required, operator)
 		{
-			if (!this.present(value, true))
-			{
-				return null;
-			}
-
 			// Make sure we're working with a number primitive
 			required = new Number(required).valueOf();
 			value = new Number(value).valueOf();
