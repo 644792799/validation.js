@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 1.0.0
- * @modified 27/04/2011
+ * @version 1.1.0
+ * @modified 04/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -11,10 +11,10 @@
  *
  * @param {string} form_id
  * @param {object} model
- * @param {object} opts
+ * @param {object} options
  * @return A new Validation object
  */
-function Validate (form_id, model, opts)
+function Validate (form_id, model, options)
 {
 	var Validation = {
 
@@ -28,22 +28,11 @@ function Validate (form_id, model, opts)
 		 * Instantiate Validation
 		 * @see Validate
 		 */
-		init: function (form_id, model, opts)
+		init: function (form_id, model, options)
 		{
-			if (opts === undefined)
-			{
-				opts = {};
-			}
-
-			// Default options
-			this.options = {
-				error_node: opts.error_node || 'span',                              // Node to wrap error message with
-				error_class: opts.error_class || 'error',                           // Class to apply to error node
-				error_list_class: opts.error_list_class || 'error_list',            // Class to apply to list of errors
-				error_display: opts.error_display !== false,                        // Display errors (you can always retrieve errors manually)
-				error_message: opts.error_message || 'The given value is invalid.', // Default error message to display
-				error_placement: opts.error_placement || 'after'                    // Within a list (list-top|list-bottom) or before|after the input parent node
-			};
+			var self = this;
+			this.id = form_id;
+			this.model = model;
 
 			// Check target form is available and given model is a valid object
 			if (!(this.form = document.getElementById(form_id)) || typeof model !== 'object')
@@ -51,13 +40,34 @@ function Validate (form_id, model, opts)
 				return null;
 			}
 
-			this.id = form_id;
-			this.model = model;
+			if (options === undefined)
+			{
+				options = {};
+			}
 
-			// Keep scope reference when changing to DOM nodes
-			var self = this;
+			// Default options
+			this.defaults = {
 
-			// Bind submit event listener to form
+				// Node to wrap error message with
+				error_node: opts.error_node || 'span',
+
+				// Class to apply to error node
+				error_class: opts.error_class || 'error',
+
+				// Class to apply to list of errors
+				error_list_class: opts.error_list_class || 'error_list',
+
+				// Display errors (you can always retrieve errors manually)
+				error_display: opts.error_display !== false,
+
+				// Default error message to display
+				error_message: opts.error_message || 'The given value is invalid.',
+
+				// Within a list (list-top|list-bottom) or before|after the input parent node
+				error_placement: opts.error_placement || 'after'
+			};
+
+			// Bind submit event listener to the form
 			this.bind('submit', function (event)
 			{
 				self.form_valid = true;
@@ -324,7 +334,7 @@ function Validate (form_id, model, opts)
 		/**
 		 * Test if any value is present or checked
 		 *
-		 * @param {mixed} value
+		 * @param value
 		 * @param {boolean} not
 		 * @returns Boolean
 		 */
@@ -592,7 +602,7 @@ function Validate (form_id, model, opts)
 	 **/
 
 	var validation = Object.create(Validation);
-	validation.init(form_id, model, opts);
+	validation.init(form_id, model, options);
 
 	return validation;
 }
