@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 1.0.0
- * @modified 27/04/2011
+ * @modified 04/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -35,14 +35,30 @@ function Validate (form_id, model, opts)
 				opts = {};
 			}
 
+			var self = this;
+			this.id = form_id;
+			this.model = model;
+
 			// Default options
 			this.options = {
-				error_node: opts.error_node || 'span',                              // Node to wrap error message with
-				error_class: opts.error_class || 'error',                           // Class to apply to error node
-				error_list_class: opts.error_list_class || 'error_list',            // Class to apply to list of errors
-				error_display: opts.error_display !== false,                        // Display errors (you can always retrieve errors manually)
-				error_message: opts.error_message || 'The given value is invalid.', // Default error message to display
-				error_placement: opts.error_placement || 'after'                    // Within a list (list-top|list-bottom) or before|after the input parent node
+
+				// Node to wrap error message with
+				error_node: opts.error_node || 'span',
+
+				// Class to apply to error node
+				error_class: opts.error_class || 'error',
+
+				// Class to apply to list of errors
+				error_list_class: opts.error_list_class || 'error_list',
+
+				// Display errors (you can always retrieve errors manually)
+				error_display: opts.error_display !== false,
+
+				// Default error message to display
+				error_message: opts.error_message || 'The given value is invalid.',
+
+				// Within a list (list-top|list-bottom) or before|after the input parent node
+				error_placement: opts.error_placement || 'after'
 			};
 
 			// Check target form is available and given model is a valid object
@@ -50,12 +66,6 @@ function Validate (form_id, model, opts)
 			{
 				return null;
 			}
-
-			this.id = form_id;
-			this.model = model;
-
-			// Keep scope reference when changing to DOM nodes
-			var self = this;
 
 			// Bind submit event listener to form
 			this.bind('submit', function (event)
