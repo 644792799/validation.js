@@ -21,8 +21,8 @@ function Validate (form_id, model, options)
 		form_valid: true, errors: {}, valid: {},
 
 	/**
-	 Instantiation methods
-	 **/
+	 * Instantiation methods
+	 */
 
 		/**
 		 * Instantiate Validation
@@ -49,22 +49,22 @@ function Validate (form_id, model, options)
 			this.defaults = {
 
 				// Node to wrap error message with
-				error_node: opts.error_node || 'span',
+				node: options.node || 'span',
 
 				// Class to apply to error node
-				error_class: opts.error_class || 'error',
+				node_class: options.node_class || 'error',
 
 				// Class to apply to list of errors
-				error_list_class: opts.error_list_class || 'error_list',
+				list_class: options.list_class || 'error_list',
 
 				// Display errors (you can always retrieve errors manually)
-				error_display: opts.error_display !== false,
+				display: options.display !== false,
 
 				// Default error message to display
-				error_message: opts.error_message || 'The given value is invalid.',
+				message: options.message || 'The given value is invalid.',
 
 				// Within a list (list-top|list-bottom) or before|after the input parent node
-				error_placement: opts.error_placement || 'after'
+				placement: options.placement || 'after'
 			};
 
 			// Bind submit event listener to the form
@@ -118,8 +118,8 @@ function Validate (form_id, model, options)
 		},
 
 	/**
-	 Error messaging
-	**/
+	 * Error messaging
+	 */
 
 		/**
 		 * Error list
@@ -134,9 +134,9 @@ function Validate (form_id, model, options)
 			{
 				list = document.createElement('ol');
 				list.setAttribute('id', 'list__' + this.id);
-				list.className = this.options.error_list_class;
+				list.className = this.options.list_class;
 
-				if (this.options.error_placement == 'list-top')
+				if (this.options.placement == 'list-top')
 				{
 					var before = this.form.firstChild;
 					this.form.insertBefore(list, before);
@@ -161,13 +161,13 @@ function Validate (form_id, model, options)
 			this.errors[target.id] = message;
 
 			// Check there is a message to display
-			if (!message && !this.options.error_display)
+			if (!message && !this.options.display)
 			{
 				return;
 			}
 
 			// Manage ordered list
-			if (this.options.error_placement == 'list-top' || this.options.error_placement == 'list-bottom')
+			if (this.options.placement == 'list-top' || this.options.placement == 'list-bottom')
 			{
 				var list = this.error_list();
 			}
@@ -175,11 +175,11 @@ function Validate (form_id, model, options)
 			// Create individual error nodes
 			var container = list || target.parentNode,
 			    text = document.createTextNode(message),
-			    node = list ? 'li' : this.options.error_node,
+			    node = list ? 'li' : this.options.node,
 			    msg = document.createElement(node);
 
 			msg.setAttribute('id', 'error__' + target.id);
-			msg.className = this.options.error_class;
+			msg.className = this.options.node_class;
 			msg.appendChild(text);
 
 			if (this.options.error_placement == 'before' && !list)
@@ -231,8 +231,8 @@ function Validate (form_id, model, options)
 		},
 
 	/**
-	 Validation methods
-	 **/
+	 * Validation methods
+	 */
 
 		/**
 		 * Validate input
