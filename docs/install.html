@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" />
+	<meta charset="utf-8" />
+
+	<title>Installation | Validation.js &mdash; Standalone, understandable Javascript form validation</title>
+
+	<link rel="stylesheet" href="assets/styles.css" />
+
+	<script src="../validation.js"></script>
+
+</head>
+<body>
+
+	<div id="content">
+
+		<h1>Installation</h1>
+
+		<p>
+			Include the validation.js Javascript file (minified version recommended for production use) within your page and instantiate a
+			new Validation object using the <code>Validate()</code> constructor method which takes 3 arguments:
+		</p>
+
+		<pre>var check_this = Validate('my_form', [ methods ], { options });</pre>
+
+		<dl>
+
+			<dt>Form ID</dt>
+			<dd>
+				<p>
+					The ID string of your form. <code>&lt;form id="<strong>my_form</strong>" method="post" action=""&gt;</code>
+				</p>
+			</dd>
+
+			<dt>Validation methods</dt>
+			<dd>
+				<p>
+					An array of input objects. An array literal is contained within square brackets (<code>[]</code>) and each object is
+					separated by a comma. <a href="input_object.html">Find out how to write an input object</a>.
+				</p>
+			</dd>
+
+			<dt>Options</dt>
+			<dd>
+				<p>
+					Default options can be overwritten for each Validation.js instance by passing in a new object. An object literal is
+					contained within curly braces (<code>{}</code>) and written in &quot;<code>key: value</code>&quot; format.
+					<a href="options.html">Find out what options are available</a>.
+				</p>
+			</dd>
+		</dl>
+
+	</div>
+
+</body>
+</html>

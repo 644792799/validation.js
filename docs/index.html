@@ -16,14 +16,23 @@
 
 	<div id="content">
 
-		<h1>Validation.js 1.1</h1>
+		<h1>Validation.js</h1>
 
-		<p>Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check
-		for value present/empty, email address format, URLs, custom expressions and comprehensive date validation. Validatating forms isn't
-		fun but hopefully <a href="http://i-like-robots.github.com/Form-Validation/">validation.js</a> makes it less of a pain. 
-		<a href="#examples">See the examples</a>.</p>
+		<p>
+			Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check for value
+			present/empty, email address format, URLs, custom expressions and comprehensive date validation. Validatating forms isn't fun
+			but hopefully <a href="http://i-like-robots.github.com/Form-Validation/">validation.js</a> makes it less of a pain.
+		</p>
 
-		<p>Written by <a href="http://www.maketea.co.uk">Matt Hinchliffe</a> and should work in the following browsers:</p>
+		<p>
+			<span class="large">Next steps:</span> <a href="examples.html">check out the examples</a> or find out <a href="install.html">how to install</a>
+		</p>
+
+		<hr />
+
+		<p>
+			Written by <a href="http://www.maketea.co.uk">Matt Hinchliffe</a> and should work in the following browsers:
+		</p>
 
 		<ul>
 			<li>Firefox 3.6 and 4</li>
@@ -33,34 +42,10 @@
 			<li>Opera 11</li>
 		</ul>
 
-		<p><a href="https://github.com/i-like-robots/Form-Validation">View the full project on Github</a>. Please submit any issues you
-		find to help improve the project =)</p>
-
-		<h2>Installation</h2>
-
-		<p>Include the Javascript file (minified version recommended for production use) within your page and instantiate a new Validation
-		object using the <code>Validate()</code> constructor method:</p>
-
-		<p><code>var check_this = Validate('my_form', { methods }, { options });</code></p>
-
-		<p>The constructor takes 3 arguments:</p>
-
-		<dl class="small">
-			<dt>Form ID</dt>
-			<dd>
-				<p>The ID string of your form.</p>
-			</dd>
-			<dt>Validation methods</dt>
-			<dd>
-				<p>This is an object in the format <code>{ input: { method: arguments } }</code> where <em>input</em> is the ID of the
-				form input to validate; <em>method</em> is a reference to a validation method (listed below) and <em>arguments</em> is the 
-				arguments for the validation method. <a href="example.html#methods">See validation methods</a>.</p>
-			</dd>
-			<dt>Options</dt>
-			<dd>
-				<p>Default options can be overwritten for each Validation instance. <a href="example.html#options">See options</a>.</p>
-			</dd>
-		</dl>
+		<p>
+			<a href="https://github.com/i-like-robots/Form-Validation">View the full project on Github</a>. Please
+			<a href="https://github.com/i-like-robots/Form-Validation/issues">submit any issues you	find</a> to help improve the project =)
+		</p>
 
 		<h3 id="methods">Validation methods</h3>
 

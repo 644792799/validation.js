@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 1.1.0
- * @modified 04/05/2011
+ * @modified 09/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -26,9 +26,10 @@ function Validate (form_id, model, options)
 
 		/**
 		 * Instantiate Validation
+		 * 
 		 * @see Validate
 		 */
-		init: function (form_id, model, options)
+		init: function(form_id, model, options)
 		{
 			var self = this;
 			this.id = form_id;
@@ -48,38 +49,42 @@ function Validate (form_id, model, options)
 			// Default options
 			this.defaults = {
 
-				// Node to wrap error message with
-				node: options.node || 'span',
-
-				// Class to apply to error node
-				node_class: options.node_class || 'error',
-
-				// Class to apply to list of errors
-				list_class: options.list_class || 'error_list',
-
 				// Display errors (you can always retrieve errors manually)
 				display: options.display !== false,
 
 				// Default error message to display
 				message: options.message || 'The given value is invalid.',
 
+				// Node to wrap error message with
+				message_node: options.message_node || 'span',
+
+				// Class to apply to error node
+				message_class: options.message_class || 'error',
+
 				// Within a list (list-top|list-bottom) or before|after the input parent node
-				placement: options.placement || 'after'
+				placement: options.placement || 'after',
+
+				// Class to apply to list of errors
+				list_class: options.list_class || 'error_list'
 			};
 
 			// Bind submit event listener to the form
-			this.bind('submit', function (event)
+			this.bind('submit', function(event)
 			{
 				self.form_valid = true;
 
 				// Destroy previous error list if necessary
 				self.clear_error('list__' + self.id);
 
-				// loop through form inputs
+				// loop through form input objects
 				for (var input in self.model)
 				{
-					self.validate(input);
+					console.log(self.model[input]);
+					// TODO: this might not work...
+					//self.validate(input);
 				}
+
+				self.form_valid = false;
 
 				event.returnValue = self.form_valid;
 
@@ -98,13 +103,18 @@ function Validate (form_id, model, options)
 		 * @param {function} handler Method to execute on event
 		 * @param {string|object} target ID string or DOM object reference
 		 */
-		bind: function (listener, handler, target)
+		bind: function(listener, handler, target)
 		{
 			target = target || this.form;
 
 			if (typeof target === 'string')
 			{
 				target = document.getElementById(target);
+			}
+
+			if (!target)
+			{
+				return;
 			}
 
 			if (target.addEventListener)
@@ -126,7 +136,7 @@ function Validate (form_id, model, options)
 		 *
 		 * @returns Error list node
 		 */
-		error_list: function ()
+		error_list: function()
 		{
 			var list;
 
@@ -156,7 +166,7 @@ function Validate (form_id, model, options)
 		 * @param {object} target
 		 * @param {string} message
 		 */
-		create_error: function (target, message)
+		create_error: function(target, message)
 		{
 			this.errors[target.id] = message;
 
@@ -175,11 +185,11 @@ function Validate (form_id, model, options)
 			// Create individual error nodes
 			var container = list || target.parentNode,
 			    text = document.createTextNode(message),
-			    node = list ? 'li' : this.options.node,
+			    node = list ? 'li' : this.options.message_node,
 			    msg = document.createElement(node);
 
 			msg.setAttribute('id', 'error__' + target.id);
-			msg.className = this.options.node_class;
+			msg.className = this.options.message_class;
 			msg.appendChild(text);
 
 			if (this.options.error_placement == 'before' && !list)
@@ -198,7 +208,7 @@ function Validate (form_id, model, options)
 		 *
 		 * @param {string} id
 		 */
-		clear_error: function (id)
+		clear_error: function(id)
 		{
 			var error = document.getElementById('error__' + id);
 
@@ -214,7 +224,7 @@ function Validate (form_id, model, options)
 		 * @param {string} input
 		 * @returns error string
 		 */
-		get_error: function (input)
+		get_error: function(input)
 		{
 			return this.errors[input] || undefined;
 		},
@@ -225,7 +235,7 @@ function Validate (form_id, model, options)
 		 * @param {string} input
 		 * @returns boolean
 		 */
-		is_valid: function (input)
+		is_valid: function(input)
 		{
 			return !! (this.valid[input]);
 		},
@@ -239,7 +249,7 @@ function Validate (form_id, model, options)
 		 *
 		 * @param {string} input
 		 */
-		validate: function (input)
+		validate: function(input)
 		{
 			var target;
 
@@ -311,7 +321,7 @@ function Validate (form_id, model, options)
 		 * @param {object} obj
 		 * @return The target input value
 		 */
-		get_value: function (obj)
+		get_value: function(obj)
 		{
 			var type;
 
@@ -338,7 +348,7 @@ function Validate (form_id, model, options)
 		 * @param {boolean} not
 		 * @returns Boolean
 		 */
-		present: function (value, not)
+		present: function(value, not)
 		{
 			var bool;
 
@@ -382,7 +392,7 @@ function Validate (form_id, model, options)
 		 * @param {string} regex
 		 * @return A boolean if test is performed or does not exist or null if no value is present
 		 */
-		test: function (value, regex)
+		test: function(value, regex)
 		{
 			if (!this.present(value, true))
 			{
@@ -412,7 +422,7 @@ function Validate (form_id, model, options)
 		 * @example
 		 * valid_date: [false, '/', 'Please enter a valid date']
 		 */
-		valid_date: function (value, usa, delimiter)
+		valid_date: function(value, usa, delimiter)
 		{
 			var parts, day, month, year;
 
@@ -455,7 +465,7 @@ function Validate (form_id, model, options)
 		 * @param {string} value
 		 * @param {int} length
 		 */
-		longer_than: function (value, length)
+		longer_than: function(value, length)
 		{
 			return (value.toString().length >= length);
 		},
@@ -466,7 +476,7 @@ function Validate (form_id, model, options)
 		 * @param {string} value
 		 * @param {int} length
 		 */
-		shorter_than: function (value, length)
+		shorter_than: function(value, length)
 		{
 			return (value.toString().length <= length);
 		},
@@ -479,7 +489,7 @@ function Validate (form_id, model, options)
 		 * @param {number} value
 		 * @param {boolean} not
 		 */
-		is_int: function (value, not)
+		is_int: function(value, not)
 		{
 			var bool = !! ((parseFloat(value) == parseInt(value)) && !isNaN(value));
 
@@ -493,7 +503,7 @@ function Validate (form_id, model, options)
 		 * @param {number} value
 		 * @param {boolean} not
 		 */
-		is_number: function (value, not)
+		is_number: function(value, not)
 		{
 			var test = new Number(value).valueOf();
 			    bool = !! (test !== NaN);
@@ -508,7 +518,7 @@ function Validate (form_id, model, options)
 		 * @param value
 		 * @param required
 		 */
-		greater_than: function (value, required)
+		greater_than: function(value, required)
 		{
 			return this.compare_numbers(value, required, '>=');
 		},
@@ -519,7 +529,7 @@ function Validate (form_id, model, options)
 		 * @param value
 		 * @param required
 		 */
-		less_than: function (value, required)
+		less_than: function(value, required)
 		{
 			return this.compare_numbers(value, required, '<=');
 		},
@@ -532,7 +542,7 @@ function Validate (form_id, model, options)
 		 * @param {string} operator
 		 * 
 		 */
-		compare_numbers: function (value, required, operator)
+		compare_numbers: function(value, required, operator)
 		{
 			// Make sure we're working with a number primitive
 			required = new Number(required).valueOf();
@@ -588,7 +598,7 @@ function Validate (form_id, model, options)
 		 * @param {string} value
 		 * @param {string} target_id
 		 */
-		match: function (value, target_id)
+		match: function(value, target_id)
 		{
 			var target = document.getElementById(target_id),
 			    match = target ? this.get_value(target) : null;
@@ -612,7 +622,7 @@ function Validate (form_id, model, options)
  Douglas Crockford <http://javascript.crockford.com/prototypal.html>
  **/
 if (typeof Object.create !== 'function') {
-	Object.create = function (o) {
+	Object.create = function(o) {
 		function F() {}
 		F.prototype = o;
 		return new F();
