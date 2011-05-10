@@ -7,7 +7,7 @@
 
 	<title>Examples | Validation.js &mdash; Standalone, understandable Javascript form validation</title>
 
-	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="stylesheet" href="assets/css/styles.css" />
 
 	<script src="../validation.js"></script>
 
@@ -70,13 +70,11 @@
 			</fieldset>
 			</form>
 
-			<pre title="Javascript">var rules = [
-	{
-		input: 'name',
+			<pre title="Javascript">var rules = {
+	name: {
 		required: true
 	},
-	{
-		input: 'email-address',
+	'email-address': {
 		required: true,
 		validate: [
 			{
@@ -87,8 +85,7 @@
 		],
 		error: 'Please enter your email address'
 	},
-	{
-		input: 'confirm-email',
+	'confirm-email': {
 		required: true,
 		validate: [
 			{
@@ -98,8 +95,7 @@
 		],
 		error: 'Please confirm your email address'
 	},
-	{
-		input: 'message',
+	message: {
 		required: true,
 		validate: [
 			{
@@ -109,25 +105,22 @@
 		],
 		error: 'Please enter a message'
 	},
-	{
-		input: 'accept-terms',
+	'accept-terms': {
 		required: true,
 		error: 'You must accept the terms'
 	}
-];
+};
 
 var options = {
 	placement: 'list-top'
 };</pre>
 
 			<script>
-			var rules = [
-				{
-					input: 'name',
+			var rules = {
+				name: {
 					required: true
 				},
-				{
-					input: 'email-address',
+				'email-address': {
 					required: true,
 					validate: [
 						{
@@ -138,8 +131,7 @@ var options = {
 					],
 					error: 'Please enter your email address'
 				},
-				{
-					input: 'confirm-email',
+				'confirm-email': {
 					required: true,
 					validate: [
 						{
@@ -149,8 +141,7 @@ var options = {
 					],
 					error: 'Please confirm your email address'
 				},
-				{
-					input: 'message',
+				message: {
 					required: true,
 					validate: [
 						{
@@ -160,12 +151,11 @@ var options = {
 					],
 					error: 'Please enter a message'
 				},
-				{
-					input: 'accept-terms',
+				'accept-terms': {
 					required: true,
 					error: 'You must accept the terms'
 				}
-			];
+			};
 
 			var options = {
 				placement: 'list-top'

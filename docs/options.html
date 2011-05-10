@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" />
+	<meta charset="utf-8" />
+
+	<title>Options | Validation.js &mdash; Standalone, understandable Javascript form validation</title>
+
+	<link rel="stylesheet" href="assets/css/styles.css" />
+
+	<script src="../validation.js"></script>
+
+</head>
+<body>
+
+	<div id="content">
+
+		<h1>Options</h1>
+
+		<p>
+			Default options can be overwritten for each Validation.js instance by passing in a new object. An object literal is contained
+			within curly braces (<code>{}</code>) and written in &quot;<code>key: value</code>&quot; format.
+		</p>
+
+		<pre>var check_this = Validate('my_form', [ methods ], <strong>{ options }</strong>);</pre>
+
+		<dl>
+
+			<dt>display</dt>
+			<dd>
+				<p>
+					Display errors boolean (you can always retrieve errors manually with the <code>get_error</code> method). The default is
+					<code>true</code>.
+				</p>
+			</dd>
+
+			<dt>message</dt>
+			<dd>
+				<p>
+					A default error message string for each invalid input.
+				</p>
+			</dd>
+
+			<dt>message_node</dt>
+			<dd>
+				<p>
+					HTML element to wrap error message with. The default is <code>'span'</code>. This is ignored if
+					<code>error_placement</code> is set to any type of list.</p>
+			</dd>
+
+			<dt>message_class</dt>
+			<dd>
+				<p>
+					Class name string to apply to the error message node. The default is <code>'error'</code>.
+				</p>
+			</dd>
+
+			<dt>placement</dt>
+			<dd>
+				<p>
+					Show error messages within an ordered list at the top of bottom of the form (<code>list-top</code> |
+					<code>list-bottom</code>) or as a sibling to the input (<code>before</code> | <code>after</code>). The default is
+					<code>'after'</code>.
+				</p>
+			</dd>
+
+			<dt>list_class</dt>
+			<dd>
+				<p>
+					Class name string to apply to the ordered list of errors. The default is <code>'error_list'</code>.
+				</p>
+			</dd>
+
+		</dl>
+
+		<h2>Example</h2>
+
+		<p>
+			The following options&hellip;
+		</p>
+
+		<pre>{
+	error_node: 'div',
+	error_class: 'form_error'
+}</pre>
+
+		<p>
+			will generate the following markup:
+		</p>
+
+		<pre>&lt;div class="form_error"&gt;Error message&lt;/div&gt;</pre>
+
+	</div>
+
+</body>
+</html>
