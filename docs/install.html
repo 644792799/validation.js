@@ -7,7 +7,7 @@
 
 	<title>Installation | Validation.js &mdash; Standalone, understandable Javascript form validation</title>
 
-	<link rel="stylesheet" href="assets/css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/styles.css" />
 
 	<script src="../validation.js"></script>
 
@@ -19,11 +19,11 @@
 		<h1>Installation</h1>
 
 		<p>
-			Include the validation.js Javascript file (minified version recommended for production use) within your page and instantiate a
-			new Validation object using the <code>Validate()</code> constructor method which takes 3 arguments:
+			Include the validation.js Javascript file (minified version recommended for production use) within your page and instantiate a new Validation
+			object using the <code>Validate()</code> constructor method which takes 3 arguments:
 		</p>
 
-		<pre>var check_this = Validate('my_form', {methods}, {options});</pre>
+		<pre>var check_this = Validate('my_form', {validation methods}, {options});</pre>
 
 		<dl class="numbered">
 
@@ -36,13 +36,13 @@
 
 			</dd>
 
-			<dt>Input validation objects</dt>
+			<dt>Validation methods</dt>
 			<dd>
 
 				<p>
-					Each form input requiring validation is passed into the constructor via an <a href="#help-object-literal">object
-					literal</a>. The value is also an object literal and contains the arguments to test the inputs value against.
-					<a href="input_object.html">Find out how to write an input object</a>.
+					Each form input requiring validation is passed into the constructor within an object literal where the key is the name of the input to be.
+					The value is also an object literal and contains the arguments to test the inputs value against. <a href="input_object.html">Find out how
+					to write an input object</a>.
 				</p>
 
 			</dd>
@@ -51,8 +51,8 @@
 			<dd>
 
 				<p>
-					Default options can be overwritten for each Validation.js instance by passing in an
-					<a href="#help-object-literal">object literal</a>. <a href="options.html">Find out what options are available</a>.
+					Default options can be overwritten for each Validation.js instance by passing in an object literal. <a href="options.html">Find out what
+					options are available</a>.
 				</p>
 
 			</dd>
@@ -63,18 +63,17 @@
 			<h2>Object literal</h2>
 
 			<p>
-				An object literal is contained within curly braces (<code>{}</code>) and written in &quot;<code>key: value</code>&quot;
-				pairs separated by a comma. Keys must be quoted if they contain hyphens or symbols or if they are a global object namesake
-				such as &quot;date&quot;.
-				<a href="https://developer.mozilla.org/en/JavaScript/Reference#Standard_global_objects_(alphabetically)">See a list of
-				global objects</a>.
+				An object literal is contained within curly braces (<code>{}</code>) and written in &quot;<code>key: value</code>&quot; pairs separated by a
+				comma. Keys must be quoted if they contain hyphens or if they are a global object namesake such as &quot;date&quot;
+				(<a href="https://developer.mozilla.org/en/JavaScript/Reference#Standard_global_objects_(alphabetically)">See a list of global objects</a>).
+				Values can be any type of data.
 			</p>
 
 			<pre>{
 	object: literals,
 	are: 'simple constructs',
 	that: 'encapsulate associated data',
-	'such-as': [methods, arrays, 'and other objects']
+	'such-as': [function(), [array], 'strings']
 }</pre>
 
 		</div>

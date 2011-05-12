@@ -61,8 +61,12 @@ function Validate (form_id, model, options)
 				// Class to apply to error node
 				message_class: options.message_class || 'error',
 
-				// Within a list (list-top|list-bottom) or before|after the input parent node
+				// Show error messages above or below (before | after) the input or the form
+				//TODO: implement new options
 				placement: options.placement || 'after',
+
+				// Display errors within a list above or below the form
+				list: options.list || false,
 
 				// Class to apply to list of errors
 				list_class: options.list_class || 'error_list'

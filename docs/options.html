@@ -7,7 +7,7 @@
 
 	<title>Options | Validation.js &mdash; Standalone, understandable Javascript form validation</title>
 
-	<link rel="stylesheet" href="assets/css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/styles.css" />
 
 	<script src="../validation.js"></script>
 
@@ -19,19 +19,17 @@
 		<h1>Options</h1>
 
 		<p>
-			Default options can be overwritten for each Validation.js instance by passing in a new object. An object literal is contained
-			within curly braces (<code>{}</code>) and written in &quot;<code>key: value</code>&quot; format.
+			Default options can be overwritten for each Validation.js instance by passing in a new object.
 		</p>
 
-		<pre>var check_this = Validate('my_form', [ methods ], <strong>{ options }</strong>);</pre>
+		<pre>var check_this = Validate('my_form', { validation methods }, <strong>{ options }</strong>);</pre>
 
 		<dl>
 
 			<dt>display</dt>
 			<dd>
 				<p>
-					Display errors boolean (you can always retrieve errors manually with the <code>get_error</code> method). The default is
-					<code>true</code>.
+					Display errors boolean (you can always retrieve errors manually with the <code>get_error</code> method). The default is <code>true</code>.
 				</p>
 			</dd>
 
@@ -45,8 +43,8 @@
 			<dt>message_node</dt>
 			<dd>
 				<p>
-					HTML element to wrap error message with. The default is <code>'span'</code>. This is ignored if
-					<code>error_placement</code> is set to any type of list.</p>
+					HTML element to wrap error message with. The default is <code>'span'</code>. This is ignored if errors are set to displayed within a list.
+				</p>
 			</dd>
 
 			<dt>message_class</dt>
@@ -59,9 +57,15 @@
 			<dt>placement</dt>
 			<dd>
 				<p>
-					Show error messages within an ordered list at the top of bottom of the form (<code>list-top</code> |
-					<code>list-bottom</code>) or as a sibling to the input (<code>before</code> | <code>after</code>). The default is
-					<code>'after'</code>.
+					Show error messages above or below (<code>before</code> | <code>after</code>) the input or the form if <code>list</code> is true. The
+					default is <code>'after'</code>.
+				</p>
+			</dd>
+
+			<dt>list</dt>
+			<dd>
+				<p>
+					Show error messages within an ordered list above or below the form. The default is <code>'false'</code>.
 				</p>
 			</dd>
 
@@ -81,12 +85,12 @@
 		</p>
 
 		<pre>{
-	error_node: 'div',
-	error_class: 'form_error'
+	message_node: 'div',
+	message_class: 'form_error'
 }</pre>
 
 		<p>
-			will generate the following markup:
+			&hellip;will generate the following markup:
 		</p>
 
 		<pre>&lt;div class="form_error"&gt;Error message&lt;/div&gt;</pre>

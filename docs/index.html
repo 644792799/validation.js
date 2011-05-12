@@ -7,7 +7,7 @@
 
 	<title>Validation.js &mdash; Standalone, understandable Javascript form validation</title>
 
-	<link rel="stylesheet" href="assets/css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/styles.css" />
 
 	<script src="../validation.js"></script>
 
@@ -19,10 +19,10 @@
 		<h1>Validation.js</h1>
 
 		<p>
-			Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check for value
-			present/empty, email address format, URLs, custom expressions and comprehensive date validation. Validatating forms isn't fun
-			but hopefully <a href="http://i-like-robots.github.com/Form-Validation/">validation.js</a> makes it less of a pain. The script
-			has been designed to be robust, super-fast and extensible.
+			Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check for value present/empty,
+			email address format, URLs, custom expressions and comprehensive date validation. Validatating forms isn't fun but hopefully
+			<a href="http://i-like-robots.github.com/Form-Validation/">validation.js</a> makes it less of a pain. The script has been designed to be robust,
+			super-fast and extensible.
 		</p>
 
 		<p class="large-text">
@@ -48,9 +48,9 @@
 
 		<h3 id="methods">Validation methods</h3>
 
-		<p><strong>Please note</strong> that single arguments are written literally. Multiple arguments are written as an array (<code>[]</code>)
-		and objects (<code>{}</code>) are used to supply arguments and overwrite options. Each validation can only be used once for each input. 
-		See the examples below for more details.</p>
+		<p><strong>Please note</strong> that single arguments are written literally. Multiple arguments are written as an array (<code>[]</code>) and objects
+		(<code>{}</code>) are used to supply arguments and overwrite options. Each validation can only be used once for each input. See the examples below for
+		more details.</p>
 
 		<dl>
 			<dt>present</dt>
@@ -178,38 +178,6 @@
 
 		</dl>
 
-		<h3 id="options">Options</h3>
-
-		<dl>
-			<dt>error_node</dt>
-			<dd>
-				<p>HTML element to wrap error message with. The default is <code>'span'</code>. This is ignored if
-				<code>error_placement</code> option is set to a list.</p>
-			</dd>
-			<dt>error_class</dt>
-			<dd>
-				<p>Class name string to apply to the error message node. The default is <code>'error'</code>.</p>
-			</dd>
-			<dt>error_list_class</dt>
-			<dd>
-				<p>Class name string to apply to the ordered list of errors node. The default is <code>'error_list'</code>.</p>
-			</dd>
-			<dt>error_message</dt>
-			<dd>
-				<p>A default error message string for each invalid input.</p>
-			</dd>
-			<dt>error_display</dt>
-			<dd>
-				<p>Display errors boolean (you can always retrieve errors manually with the <code>get_error</code> method). The default is
-				<code>true</code>.</p>
-			</dd>
-			<dt>error_placement</dt>
-			<dd>
-				<p>Show error messages within an ordered list at the top of bottom of the form (<code>list-top</code>|<code>list-bottom</code>)
-				or as a sibling to the input (<code>before</code>|<code>after</code>). The default is <code>'after'</code>.</p>
-			</dd>
-		</dl>
-
 		<h4 id="extending">Extending</h4>
 
 		<dl>
@@ -250,185 +218,6 @@
 				<p><code>check_this.is_valid(input_id);</code>
 			</dd>
 		</dl>
-
-		<h5 id="examples">Example 1</h5>
-
-		<p>This example form shows some default functionality within validation.js</p>
-
-		<!-- Example 1 -->
-		<div id="example-1" class="example">
-
-			<form id="form1" action="" method="get">
-			<fieldset>
-
-				<div class="row">
-					<label for="name">Name</label>
-					<input type="text" id="name" name="name" />
-				</div>
-
-				<div class="row">
-					<label for="email-address">Email Address</label>
-					<input type="text" id="email-address" name="email-address" />
-				</div>
-
-				<div class="row">
-					<label for="confirm-email">Confirm Email Address</label>
-					<input type="text" id="confirm-email" name="confirm-email" />
-				</div>
-
-				<div class="row">
-					<label for="date">Date in d-m-yy or dd-mm-yyyy format (optional)</label>
-					<input type="text" id="date" name="date" />
-				</div>
-
-				<div class="row textarea">
-					<label for="message">Message</label>
-					<textarea id="message" name="message" cols="10" rows="6"></textarea>
-				</div>
-
-				<div class="row checkbox">
-					<label for="accept-terms" class="label-checkbox"><input type="checkbox" id="accept-terms" name="accept-terms" value="true" /> Accept terms</label>
-				</div>
-
-				<div class="row buttons">
-					<button name="submit" type="submit">Validate</button>
-				</div>
-
-			</fieldset>
-			</form>
-
-			<p>The code below is used to validate the example form above.</p>
-
-			<pre title="Javascript">
-var validation_rules = [
-	{
-		input: 'name',
-		required: true
-	},
-	{
-		input: 'email-address',
-		required: true,
-		validate: [
-			{
-				method: 'test',
-				arguments: 'email',
-				error: 'Please enter a valid email address'
-			}
-		],
-		error: 'Please enter your email address'
-	},
-	{
-		input: 'confirm-email',
-		required: true,
-		validate: [
-			{
-				method: 'match',
-				arguments: 'email'
-			}
-		],
-		error: 'Please confirm your email address'
-	},
-	{
-		input: 'date',
-		validate: [
-			{
-				method: 'valid_date',
-				arguments: [false, '-'],
-				error: 'Please enter a valid date'
-			}
-		]
-	},
-	{
-		input: 'message',
-		required: true,
-		validate: [
-			{
-				method: 'longer_than',
-				arguments: 3
-			}
-		],
-		error: 'Please enter a message'
-	},
-	{
-		input: 'accept-terms',
-		required: true,
-		error: 'You must accept the terms'
-	}
-];
-
-var validation_options = {
-	placement: 'list-top'
-};
-
-var test_validate = Validate('form1', validation_rules, validation_options);
-			</pre>
-
-			<script>
-			var validation_rules = [
-				{
-					input: 'name',
-					required: true
-				},
-				{
-					input: 'email-address',
-					required: true,
-					validate: [
-						{
-							method: 'test',
-							arguments: 'email',
-							error: 'Please enter a valid email address'
-						}
-					],
-					error: 'Please enter your email address'
-				},
-				{
-					input: 'confirm-email',
-					required: true,
-					validate: [
-						{
-							method: 'match',
-							arguments: 'email'
-						}
-					],
-					error: 'Please confirm your email address'
-				},
-				{
-					input: 'date',
-					validate: [
-						{
-							method: 'valid_date',
-							arguments: [false, '-'],
-							error: 'Please enter a valid date'
-						}
-					]
-				},
-				{
-					input: 'message',
-					required: true,
-					validate: [
-						{
-							method: 'longer_than',
-							arguments: 3
-						}
-					],
-					error: 'Please enter a message'
-				},
-				{
-					input: 'accept-terms',
-					required: true,
-					error: 'You must accept the terms'
-				}
-			];
-
-			var validation_options = {
-				placement: 'list-top'
-			};
-
-			var test_validate = Validate('form1', validation_rules, validation_options);
-			</script>
-
-		</div>
-		<!--/ Example 1 -->
 
 	</div>
 
