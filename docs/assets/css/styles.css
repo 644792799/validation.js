@@ -55,7 +55,7 @@ html input, html select, html textarea, html button {
 		vertical-align:middle;
 	}
 		input.file, input[type=file] {
-			border:0;
+
 		}
 
 	button, input.button input[type=button], input[type=submit], input[type=reset] {
@@ -299,7 +299,7 @@ label {
 		font-size:0.857em;
 		color:#ccc;
 	}
-	.inline label {
+	.inline label, .checkbox label, .radio label {
 		padding-top:5px; /* Input padding + border */
 		padding-bottom:5px;
 		line-height:normal;
@@ -317,6 +317,7 @@ form input, form select, form textarea, form button { /* See comment above about
 		color:#888;
 	}
 	form input, form select, form textarea {
+		width:300px;
 		color:#555;
 		border:1px solid #555;
 	}
@@ -338,6 +339,12 @@ form input, form select, form textarea, form button { /* See comment above about
 			height:auto;
 			padding:0;
 		}
+
+	/* Checkboxes and radio buttons */
+	.checkbox input, .radio input {
+		width:auto !important;
+		margin-right:10px;
+	}
 
 	/* Buttons */
 	form button, .buttons input {

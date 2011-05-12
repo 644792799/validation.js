@@ -1,13 +1,15 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 1.1.0
- * @modified 09/05/2011
+ * @modified 12/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
 
 /**
- * Validate constructor method
+ * Validate
+ *
+ * Global constructor for Validation.js
  *
  * @param {string} form_id
  * @param {object} model
@@ -83,9 +85,7 @@ function Validate (form_id, model, options)
 				// loop through form input objects
 				for (var input in self.model)
 				{
-					console.log(self.model[input]);
-					// TODO: this might not work...
-					//self.validate(input);
+					self.validate(input);
 				}
 
 				self.form_valid = false;
@@ -101,7 +101,9 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Bind method to target form submit event
+		 * Bind
+		 *
+		 * Bind an event listener to a target
 		 *
 		 * @param {string} listener Event listener
 		 * @param {function} handler Method to execute on event
@@ -113,7 +115,7 @@ function Validate (form_id, model, options)
 
 			if (typeof target === 'string')
 			{
-				target = document.getElementById(target);
+				target = this.form.elements[target];
 			}
 
 			if (!target)
@@ -261,7 +263,7 @@ function Validate (form_id, model, options)
 			this.clear_error(input);
 
 			// Check the input is available
-			if (!(target = document.getElementById(input)))
+			if (!(target = this.form.elements[input]))
 			{
 				return;
 			}
@@ -296,7 +298,6 @@ function Validate (form_id, model, options)
 					}
 
 					// Perform validation method if a value is present
-					// TODO: Sort this out. Required is an option https://github.com/i-like-robots/Form-Validation/issues/4
 					if (!this.present(value, true))
 					{
 						return null;
