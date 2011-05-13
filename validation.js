@@ -49,7 +49,7 @@ function Validate (form_id, model, options)
 			}
 
 			// Default options
-			this.defaults = {
+			this.options = {
 
 				// Display errors (you can always retrieve errors manually)
 				display: options.display !== false,
@@ -257,7 +257,7 @@ function Validate (form_id, model, options)
 		 */
 		validate: function(input)
 		{
-			var target;
+			var target, validations = new Array();
 
 			// Remove any previous error messages
 			this.clear_error(input);
@@ -268,54 +268,60 @@ function Validate (form_id, model, options)
 				return;
 			}
 
+			// If a value is required make present method first test
+			if (this.model[input]['required'])
+			{
+				validations.push({
+					method: 'present',
+					arguments: true
+				});
+			}
+
+			if (this.model[input]['validate'])
+			{
+				validations = validations.concat(this.model[input]['validate']);
+			}
+
 			// Get the input value
 			var value = this.get_value(target);
 
 			// Loop through validation methods for the input
-			for (var method in this.model[input])
+			for (var i = 0; i < validations.length; i++)
 			{
-				if (method != 'error_message')
+				var method = validations[i].method || false;
+
+				// Check validation method is available
+				if (!method || typeof this[method] !== 'function')
 				{
-					// Check validation method is available
-					if (typeof this[method] !== 'function')
-					{
-						break;
-					}
+					break;
+				}
 
-					var args = this.model[input][method],
-					    error = args.error_message || (this.model[input].error_message || this.options.error_message);
+				var args = validations[i].arguments,
+				    error = validations[i].error || (this.model[input].error || this.options.message);
 
-					// Make sure arguments are in an array
-					if (Object.prototype.toString.call(args) === '[object Object]')
-					{
-						args = args.arguments;
-					}
+				// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
+				if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
+				{
+					args = [args];
+				}
 
-					// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
-					if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
-					{
-						args = [args];
-					}
+				// Perform validation method only if a value is present
+				if (method != 'present' && !this.present(value, true))
+				{
+					return null;
+				}
 
-					// Perform validation method if a value is present
-					if (!this.present(value, true))
-					{
-						return null;
-					}
+				if (this[method].apply(this, [value].concat(args)) === false)
+				{
+					this.valid[input] = this.form_valid = false;
 
-					if (this[method].apply(this, [value].concat(args)) === false)
-					{
-						this.valid[input] = this.form_valid = false;
+					this.create_error(target, error);
 
-						// Create error message
-						this.create_error(target, error);
-
-						break;
-					}
-					else
-					{
-						this.valid[input] = true;
-					}
+					break;
+				}
+				else
+				{
+					this.valid[input] = true;
 				}
 			}
 		},
