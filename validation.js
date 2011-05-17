@@ -79,7 +79,7 @@ function Validate (form_id, model, options)
 				self.form_valid = true;
 
 				// Destroy previous error list if necessary
-				self.clear_error_message('list__' + self.id);
+				self.clear_error_message('error_list_' + self.id);
 
 				// loop through form input objects
 				for (var input in self.model)
@@ -145,10 +145,10 @@ function Validate (form_id, model, options)
 		{
 			var list;
 
-			if (!(list = document.getElementById('list__' + this.id)))
+			if (!(list = document.getElementById('error_list_' + this.id)))
 			{
 				list = document.createElement('ol');
-				list.setAttribute('id', 'list__' + this.id);
+				list.setAttribute('id', 'error_list_' + this.id);
 				list.className = this.options.list_class;
 
 				if (this.options.placement == 'before')
@@ -289,25 +289,23 @@ function Validate (form_id, model, options)
 			}
 
 			// Loop through inputs
+			var valid = true;
+
+			input_loop:
 			for (var e = 0; e < targets.length; e++)
 			{
-				var valid,
-				    target = targets[e],
-				    value = this.get_value(target);
+				var target = targets[e], value = this.get_value(target);
 
 				// Loop through validation methods
 				for (var i = 0; i < validations.length; i++)
 				{
-					var method = validations[i].method || false;
+					var args = validations[i].params, method = validations[i].method || false;
 
-					// Check validation method is available
-					if (!method || typeof this[method] !== 'function')
+					// Continue only if a value is present
+					if (method != 'present' && !this.present(value, true))
 					{
-						break;
+						break input_loop;
 					}
-
-					var args = validations[i].params,
-					    error = validations[i].error || (this.model[input].error || this.options.message);
 
 					// Force single argument into an array
 					// Note: Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
@@ -316,19 +314,14 @@ function Validate (form_id, model, options)
 						args = [args];
 					}
 
-					// Perform validation method only if a value is present
-					if (method != 'present' && !this.present(value, true))
-					{
-						return null;
-					}
-
+					// Perform validation method
 					if (this[method].apply(this, [value].concat(args)) === false)
 					{
 						valid = false;
 
-						this.create_error_message(target, error);
+						this.create_error_message(target, (validations[i].error || (this.model[input].error || this.options.message)));
 
-						break;
+						break input_loop;
 					}
 					else
 					{
@@ -338,8 +331,7 @@ function Validate (form_id, model, options)
 			}
 
 			// Create error
-			// TODO
-			this.valid[input] = this.form_valid = valid;
+			return this.valid[input] = this.form_valid = valid;
 		},
 
 		/**
@@ -522,7 +514,7 @@ function Validate (form_id, model, options)
 		 */
 		is_integer: function(value, not)
 		{
-			var bool = !! ((parseFloat(value, 10) == parseInt(value, 10)) && !isNaN(value));
+			var bool = ((parseFloat(value, 10) == parseInt(value, 10)) && !isNaN(value));
 
 			// Invert boolean if checking for NOT an integer
 			return (not) ? bool : !bool;
@@ -536,8 +528,7 @@ function Validate (form_id, model, options)
 		 */
 		is_number: function(value, not)
 		{
-			var test = new Number(value).valueOf(),
-			    bool = isNaN(test);
+			var bool = isNaN(value);
 
 			// Invert boolean if checking for NOT an integer
 			return (not) ? bool : !bool;
@@ -553,7 +544,7 @@ function Validate (form_id, model, options)
 		 */
 		greater_than: function(value, required)
 		{
-			return this.compare_numbers(value, required, '>=');
+			return this.compare_numbers(value, required, '>');
 		},
 
 		/**
@@ -566,7 +557,7 @@ function Validate (form_id, model, options)
 		 */
 		less_than: function(value, required)
 		{
-			return this.compare_numbers(value, required, '<=');
+			return this.compare_numbers(value, required, '<');
 		},
 
 		/**
@@ -579,10 +570,6 @@ function Validate (form_id, model, options)
 		 */
 		compare_numbers: function(value, required, operator)
 		{
-			// Make sure we're working with a number primitive
-			required = new Number(required).valueOf();
-			value = new Number(value).valueOf();
-
 			if (isNaN(value) || isNaN(required))
 			{
 				return false;
@@ -612,9 +599,14 @@ function Validate (form_id, model, options)
 					result = (value <= required);
 					break;
 
-				// Value is a factor of
-				case '%':
+				// Value is a multiple of
+				case '*':
 					result = (value % required === 0);
+					break;
+
+				// Value is a factor of
+				case '*/':
+					result = (required % value === 0);
 					break;
 
 				// Value does is not equal to

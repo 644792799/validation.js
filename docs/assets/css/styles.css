@@ -360,7 +360,7 @@ form input, form select, form textarea, form button { /* See comment above about
 	}
 		.error {
 			display:block;
-			width:290px;
+			width:299px;
 			padding:0 5px;
 			line-height:1.5;
 			color:#c81730;

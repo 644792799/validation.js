@@ -22,10 +22,11 @@
 			Lorem ipsum doler sit amet.
 		</p>
 
-		<ul>
+		<ol>
 			<li><a href="#a-simple-contact-form">A simple contact form</a></li>
+			<li><a href="#handling-numbers">Handling numbers</a></li>
 			<li><a href="#radio-buttons-checkboxes">Radio buttons and checkboxes</a></li>
-		</ul>
+		</ol>
 
 		<!-- Example 1 -->
 		<div id="a-simple-contact-form" class="example">
@@ -171,16 +172,147 @@ var options = {
 		<!--/ Example 1 -->
 
 		<!-- Example 2 -->
+		<div id="handling-numbers" class="example">
+
+			<h3>Handling numbers</h3>
+
+			<p>
+				The basic contact form below shows some default functionality of Validation.js including required fields, field confirmation and input value
+				length.
+			</p>
+
+			<form id="form2" action="" method="get">
+			<fieldset>
+
+				<div class="row">
+					<label for="a_number">A number</label>
+					<input type="text" id="a_number" name="a_number" />
+				</div>
+
+				<div class="row">
+					<label for="an_integer">An integer</label>
+					<input type="text" id="an_integer" name="an_integer" />
+				</div>
+
+				<div class="row">
+					<label for="greater_than">Greater than 5</label>
+					<input type="text" id="greater_than" name="greater_than" />
+				</div>
+
+				<div class="row">
+					<label for="greater_less_than">Greater than 5.25, less than 5.75</label>
+					<input type="text" id="greater_less_than" name="greater_less_than" />
+				</div>
+
+				<div class="row">
+					<label for="multiple_of">A multiple of 5</label>
+					<input type="text" id="multiple_of" name="multiple_of" />
+				</div>
+
+				<div class="row">
+					<label for="factor_of">A factor of 30</label>
+					<input type="text" id="factor_of" name="factor_of" />
+				</div>
+
+				<div class="row buttons">
+					<button name="submit" type="submit">Validate</button>
+				</div>
+
+			</fieldset>
+			</form>
+
+			<pre title="Javascript"></pre>
+
+			<script>
+			var rules = {
+				a_number: {
+					required: true,
+					validate: [
+						{
+							method: 'is_number',
+							error: 'This is not a number'
+						}
+					],
+					error: 'Please enter a number'
+				},
+				an_integer: {
+					required: true,
+					validate: [
+						{
+							method: 'is_integer',
+							error: 'This is not an integer'
+						}
+					],
+					error: 'Please enter a number'
+				},
+				greater_than: {
+					required: true,
+					validate: [
+						{
+							method: 'greater_than',
+							params: 5,
+							error: 'This is not greater than 5'
+						}
+					],
+					error: 'Please enter a number'
+				},
+				greater_less_than: {
+					required: true,
+					validate: [
+						{
+							method: 'greater_than',
+							params: 5.25,
+							error: 'This is not greater than 5.25'
+						},
+						{
+							method: 'less_than',
+							params: 5.75,
+							error: 'This is not less than 5.75'
+						}
+					],
+					error: 'Please enter a number'
+				},
+				multiple_of: {
+					required: true,
+					validate: [
+						{
+							method: 'compare_numbers',
+							params: [5, '*'],
+							error: 'This is not a multiple of 5'
+						}
+					],
+					error: 'Please enter a number'
+				},
+				factor_of: {
+					required: true,
+					validate: [
+						{
+							method: 'compare_numbers',
+							params: [30, '*/'],
+							error: 'This is not a factor of 30'
+						}
+					],
+					error: 'Please enter a number'
+				}
+			};
+
+			var example2 = Validate('form2', rules, {});
+			</script>
+
+		</div>
+		<!--/ Example 2 -->
+
+		<!-- Example 3 -->
 		<div id="radio-buttons-checkboxes" class="example">
 
-			<h3>Validate radio buttons and checkboxes</h3>
+			<h4>Validate radio buttons and checkboxes</h4>
 
 			<p>
 				Validating an array of inputs (inputs sharing the same name appended with a pair of square brackets &quot;<code>[]</code>&quot;) is tricky in
 				many situations but here it is in Validation.js:
 			</p>
 
-			<form id="form2" action="" method="get">
+			<form id="form3" action="" method="get">
 			<fieldset>
 
 				<legend>Select one radio input</legend>
@@ -225,10 +357,11 @@ var options = {
 				}
 			};
 
-			var example2 = Validate('form2', rules, {});
+			var example3 = Validate('form3', rules, {});
 			</script>
 
 		</div>
+		<!--/ Example 3 -->
 
 	</div>
 
