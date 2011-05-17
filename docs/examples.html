@@ -24,12 +24,13 @@
 
 		<ul>
 			<li><a href="#a-simple-contact-form">A simple contact form</a></li>
+			<li><a href="#radio-buttons-checkboxes">Radio buttons and checkboxes</a></li>
 		</ul>
 
-		<!-- example -->
+		<!-- Example 1 -->
 		<div id="a-simple-contact-form" class="example">
 
-			<h2 id="examples">Validate a simple contact form</h2>
+			<h2>Validate a simple contact form</h2>
 
 			<p>
 				The basic contact form below shows some default functionality of Validation.js including required fields, field confirmation and input value
@@ -78,8 +79,8 @@
 		required: true,
 		validate: [
 			{
-				method: 'test',
-				arguments: 'email',
+				method: 'format',
+				params: 'email',
 				error: 'Please enter a valid email address'
 			}
 		],
@@ -90,7 +91,7 @@
 		validate: [
 			{
 				method: 'match',
-				arguments: 'email'
+				params: 'email'
 			}
 		],
 		error: 'Please confirm your email address'
@@ -100,7 +101,7 @@
 		validate: [
 			{
 				method: 'longer_than',
-				arguments: 3
+				params: 3
 			}
 		],
 		error: 'Please enter a message'
@@ -112,7 +113,8 @@
 };
 
 var options = {
-	placement: 'list-top'
+	placement: 'before',
+	list: true
 };</pre>
 
 			<script>
@@ -124,8 +126,8 @@ var options = {
 					required: true,
 					validate: [
 						{
-							method: 'test',
-							arguments: 'email',
+							method: 'format',
+							params: 'email',
 							error: 'Please enter a valid email address'
 						}
 					],
@@ -136,7 +138,7 @@ var options = {
 					validate: [
 						{
 							method: 'match',
-							arguments: 'email'
+							params: 'email'
 						}
 					],
 					error: 'Please confirm your email address'
@@ -146,7 +148,7 @@ var options = {
 					validate: [
 						{
 							method: 'longer_than',
-							arguments: 3
+							params: 3
 						}
 					],
 					error: 'Please enter a message'
@@ -158,14 +160,75 @@ var options = {
 			};
 
 			var options = {
-				placement: 'list-top'
+				placement: 'before',
+				list: true
 			};
 
-			var test_validate = Validate('form1', rules, options);
+			var example1 = Validate('form1', rules, options);
 			</script>
 
 		</div>
-		<!--/ example -->
+		<!--/ Example 1 -->
+
+		<!-- Example 2 -->
+		<div id="radio-buttons-checkboxes" class="example">
+
+			<h3>Validate radio buttons and checkboxes</h3>
+
+			<p>
+				Validating an array of inputs (inputs sharing the same name appended with a pair of square brackets &quot;<code>[]</code>&quot;) is tricky in
+				many situations but here it is in Validation.js:
+			</p>
+
+			<form id="form2" action="" method="get">
+			<fieldset>
+
+				<legend>Select one radio input</legend>
+
+				<div class="row radio">
+					<input type="radio" id="one" name="radios[]" />
+					<label for="one">One</label>
+				</div>
+
+				<div class="row radio">
+					<input type="radio" id="two" name="radios[]" />
+					<label for="two">Two</label>
+				</div>
+
+				<div class="row radio">
+					<input type="radio" id="three" name="radios[]" />
+					<label for="three">Three</label>
+				</div>
+
+				<div class="row radio">
+					<input type="radio" id="four" name="radios[]" />
+					<label for="four">Four</label>
+				</div>
+
+			</fieldset>
+
+			<fieldset>
+
+				<legend>Select two</legend>
+
+				<div class="row buttons">
+					<button name="submit" type="submit">Validate</button>
+				</div>
+
+			</fieldset>
+			</form>
+
+			<script>
+			var rules = {
+				'radios[]': {
+					required: true
+				}
+			};
+
+			var example2 = Validate('form2', rules, {});
+			</script>
+
+		</div>
 
 	</div>
 

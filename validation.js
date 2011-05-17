@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 1.1.0
- * @modified 12/05/2011
+ * @modified 16/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -40,7 +40,7 @@ function Validate (form_id, model, options)
 			// Check target form is available and given model is a valid object
 			if (!(this.form = document.getElementById(form_id)) || typeof model !== 'object')
 			{
-				return null;
+				return;
 			}
 
 			if (options === undefined)
@@ -64,7 +64,6 @@ function Validate (form_id, model, options)
 				message_class: options.message_class || 'error',
 
 				// Show error messages above or below (before | after) the input or the form
-				//TODO: implement new options
 				placement: options.placement || 'after',
 
 				// Display errors within a list above or below the form
@@ -80,7 +79,7 @@ function Validate (form_id, model, options)
 				self.form_valid = true;
 
 				// Destroy previous error list if necessary
-				self.clear_error('list__' + self.id);
+				self.clear_error_message('list__' + self.id);
 
 				// loop through form input objects
 				for (var input in self.model)
@@ -138,11 +137,11 @@ function Validate (form_id, model, options)
 	 */
 
 		/**
-		 * Error list
+		 * Create error list
 		 *
 		 * @returns Error list node
 		 */
-		error_list: function()
+		create_error_list: function()
 		{
 			var list;
 
@@ -152,7 +151,7 @@ function Validate (form_id, model, options)
 				list.setAttribute('id', 'list__' + this.id);
 				list.className = this.options.list_class;
 
-				if (this.options.placement == 'list-top')
+				if (this.options.placement == 'before')
 				{
 					var before = this.form.firstChild;
 					this.form.insertBefore(list, before);
@@ -167,14 +166,14 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Create error
+		 * Create error message
 		 *
 		 * @param {object} target
 		 * @param {string} message
 		 */
-		create_error: function(target, message)
+		create_error_message: function(target, message)
 		{
-			this.errors[target.id] = message;
+			var list = false;
 
 			// Check there is a message to display
 			if (!message && !this.options.display)
@@ -182,23 +181,24 @@ function Validate (form_id, model, options)
 				return;
 			}
 
+			this.errors[target.name] = message;
+
 			// Manage ordered list
-			if (this.options.placement == 'list-top' || this.options.placement == 'list-bottom')
+			if (this.options.list)
 			{
-				var list = this.error_list();
+				list = this.create_error_list();
 			}
 
-			// Create individual error nodes
 			var container = list || target.parentNode,
 			    text = document.createTextNode(message),
 			    node = list ? 'li' : this.options.message_node,
 			    msg = document.createElement(node);
 
-			msg.setAttribute('id', 'error__' + target.id);
+			msg.setAttribute('id', 'input_error_' + target.name);
 			msg.className = this.options.message_class;
 			msg.appendChild(text);
 
-			if (this.options.error_placement == 'before' && !list)
+			if (!list && this.options.placement == 'before')
 			{
 				var before = container.firstChild;
 				container.insertBefore(msg, before);
@@ -210,13 +210,13 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Clear error
+		 * Clear error message
 		 *
-		 * @param {string} id
+		 * @param {string} name
 		 */
-		clear_error: function(id)
+		clear_error_message: function(name)
 		{
-			var error = document.getElementById('error__' + id);
+			var error = document.getElementById('input_error_' + name);
 
 			if (error)
 			{
@@ -251,83 +251,99 @@ function Validate (form_id, model, options)
 	 */
 
 		/**
-		 * Validate input
+		 * Validate
 		 *
 		 * @param {string} input
 		 */
 		validate: function(input)
 		{
-			var target, validations = new Array();
+			var targets, validations = [];
 
 			// Remove any previous error messages
-			this.clear_error(input);
+			this.clear_error_message(input);
 
 			// Check the input is available
-			if (!(target = this.form.elements[input]))
+			if (!(targets = this.form.elements[input]))
 			{
 				return;
 			}
 
-			// If a value is required make present method first test
-			if (this.model[input]['required'])
+			// Force single input into an array
+			if (Object.prototype.toString.call(targets) !== '[object NodeList]')
+			{
+				targets = [targets];
+			}
+
+			// If required option is set make push present() to validations
+			if (this.model[input].required)
 			{
 				validations.push({
 					method: 'present',
-					arguments: true
+					params: true
 				});
 			}
 
-			if (this.model[input]['validate'])
+			if (this.model[input].validate)
 			{
-				validations = validations.concat(this.model[input]['validate']);
+				validations = validations.concat(this.model[input].validate);
 			}
 
-			// Get the input value
-			var value = this.get_value(target);
-
-			// Loop through validation methods for the input
-			for (var i = 0; i < validations.length; i++)
+			// Loop through inputs
+			for (var e = 0; e < targets.length; e++)
 			{
-				var method = validations[i].method || false;
+				var valid,
+				    target = targets[e],
+				    value = this.get_value(target);
 
-				// Check validation method is available
-				if (!method || typeof this[method] !== 'function')
+				// Loop through validation methods
+				for (var i = 0; i < validations.length; i++)
 				{
-					break;
-				}
+					var method = validations[i].method || false;
 
-				var args = validations[i].arguments,
-				    error = validations[i].error || (this.model[input].error || this.options.message);
+					// Check validation method is available
+					if (!method || typeof this[method] !== 'function')
+					{
+						break;
+					}
 
-				// Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
-				if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
-				{
-					args = [args];
-				}
+					var args = validations[i].params,
+					    error = validations[i].error || (this.model[input].error || this.options.message);
 
-				// Perform validation method only if a value is present
-				if (method != 'present' && !this.present(value, true))
-				{
-					return null;
-				}
+					// Force single argument into an array
+					// Note: Arrays are objects when a constructor is not used; see <http://bit.ly/lMo5> and <http://mzl.la/bx6jI8>
+					if (!(Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]'))
+					{
+						args = [args];
+					}
 
-				if (this[method].apply(this, [value].concat(args)) === false)
-				{
-					this.valid[input] = this.form_valid = false;
+					// Perform validation method only if a value is present
+					if (method != 'present' && !this.present(value, true))
+					{
+						return null;
+					}
 
-					this.create_error(target, error);
+					if (this[method].apply(this, [value].concat(args)) === false)
+					{
+						valid = false;
 
-					break;
-				}
-				else
-				{
-					this.valid[input] = true;
+						this.create_error_message(target, error);
+
+						break;
+					}
+					else
+					{
+						this.valid[input] = true;
+					}
 				}
 			}
+
+			// Create error
+			// TODO
+			this.valid[input] = this.form_valid = valid;
 		},
 
 		/**
-		 * Get an inputs value or status
+		 * Get value
 		 *
 		 * @param {object} obj
 		 * @return The target input value
@@ -353,7 +369,7 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Test if any value is present or checked
+		 * Present
 		 *
 		 * @param value
 		 * @param {boolean} not
@@ -376,7 +392,7 @@ function Validate (form_id, model, options)
 			// Check string entered is greater than zero
 			else
 			{
-				bool = !! (value.length > 0);
+				bool = (value.length > 0);
 			}
 
 			// Invert boolean if checking for not present
@@ -385,7 +401,7 @@ function Validate (form_id, model, options)
 
 		/**
 		 * Regular expressions for use with test() method
-		 * Add more with 'your_object.methods.expressions[name] = /^*$/'
+		 * Add more with 'your_object.expressions[name] = /^*$/'
 		 */
 		expressions: {
 			alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
@@ -397,13 +413,15 @@ function Validate (form_id, model, options)
 		},
 
 		/**
+		 * Format
+		 *
 		 * Test a value string against a regular expression
 		 *
 		 * @param {string} value
 		 * @param {string} regex
 		 * @return A boolean if test is performed or does not exist or null if no value is present
 		 */
-		test: function(value, regex)
+		format: function(value, regex)
 		{
 			if (!this.present(value, true))
 			{
@@ -421,7 +439,7 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Test if a string is a valid date
+		 * Valid date
 		 *
 		 * Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. The Javascript Date object is useless in this 
 		 * instance as an invalid date of 32/13/11 would be 'rounded' up as 1/2/12
@@ -431,7 +449,9 @@ function Validate (form_id, model, options)
 		 * @param {string} delimiter
 		 * @return A boolean or null if no value is present
 		 * @example
-		 * valid_date: [false, '/', 'Please enter a valid date']
+		 * valid_date: {
+		 *     params: [false, '/']
+		 * }
 		 */
 		valid_date: function(value, usa, delimiter)
 		{
@@ -495,14 +515,14 @@ function Validate (form_id, model, options)
 		/**
 		 * Number is an integer
 		 *
-		 * For a round-up on testing for intergers see <http://bit.ly/aOpiDa>
+		 * For a round-up on testing for integers see <http://bit.ly/aOpiDa>
 		 *
 		 * @param {number} value
 		 * @param {boolean} not
 		 */
-		is_int: function(value, not)
+		is_integer: function(value, not)
 		{
-			var bool = !! ((parseFloat(value) == parseInt(value)) && !isNaN(value));
+			var bool = !! ((parseFloat(value, 10) == parseInt(value, 10)) && !isNaN(value));
 
 			// Invert boolean if checking for NOT an integer
 			return (not) ? bool : !bool;
@@ -516,15 +536,17 @@ function Validate (form_id, model, options)
 		 */
 		is_number: function(value, not)
 		{
-			var test = new Number(value).valueOf();
-			    bool = !! (test !== NaN);
+			var test = new Number(value).valueOf(),
+			    bool = isNaN(test);
 
 			// Invert boolean if checking for NOT an integer
 			return (not) ? bool : !bool;
 		},
 		
 		/**
-		 * Number is greater than
+		 * Greater than
+		 *
+		 * This is a shortcut for the compare_numbers() method
 		 *
 		 * @param value
 		 * @param required
@@ -535,7 +557,9 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Number is less than
+		 * Less than
+		 *
+		 * This is a shortcut for the compare_numbers() method
 		 *
 		 * @param value
 		 * @param required
@@ -546,7 +570,7 @@ function Validate (form_id, model, options)
 		},
 
 		/**
-		 * Compare two numbers
+		 * Compare numbers
 		 *
 		 * @param value
 		 * @param required
@@ -559,52 +583,58 @@ function Validate (form_id, model, options)
 			required = new Number(required).valueOf();
 			value = new Number(value).valueOf();
 
-			if (value === NaN || required === NaN)
+			if (isNaN(value) || isNaN(required))
 			{
 				return false;
 			}
+
+			var result;
 
 			switch (operator)
 			{
 				// Value is greater than
 				case '>' :
-					return (value > required);
+					result = (value > required);
 					break;
 
 				// Value is greater or equal to
 				case '>=' :
-					return (value >= required);
+					result = (value >= required);
 					break;
 
 				// Value is less than
 				case '<' :
-					return (value < required);
+					result = (value < required);
 					break;
 
 				// Value is less than or equal to
 				case '<=' :
-					return (value <= required);
+					result = (value <= required);
 					break;
 
 				// Value is a factor of
 				case '%':
-					return (value % required == 0);
+					result = (value % required === 0);
 					break;
 
 				// Value does is not equal to
 				case '!=' :
-					return (value != required);
+					result = (value != required);
 					break;
 
 				// Value is equal to
 				default: /* == */
-					return (value == required);
+					result = (value == required);
 					break;
 			}
+
+			return result;
 		},
 
 		/**
-		 * Compare input values
+		 * Match
+		 *
+		 * Compare two input values
 		 *
 		 * @param {string} value
 		 * @param {string} target_id
@@ -614,13 +644,13 @@ function Validate (form_id, model, options)
 			var target = document.getElementById(target_id),
 			    match = target ? this.get_value(target) : null;
 
-			return !! (value === match);
+			return (value === match);
 		}
 	};
 
 	/**
-	 Object constructor
-	 **/
+	 * Object constructor
+	 */
 
 	var validation = Object.create(Validation);
 	validation.init(form_id, model, options);
@@ -629,9 +659,9 @@ function Validate (form_id, model, options)
 }
 
 /**
- Prototypal inheritance operator support
- Douglas Crockford <http://javascript.crockford.com/prototypal.html>
- **/
+ * Prototypal inheritance operator support
+ * Douglas Crockford <http://javascript.crockford.com/prototypal.html>
+ */
 if (typeof Object.create !== 'function') {
 	Object.create = function(o) {
 		function F() {}

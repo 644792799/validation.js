@@ -1,7 +1,9 @@
+@charset "UTF-8";
+
 /**
  * Created by:  Matt Hinchliffe, www.maketea.co.uk
  * Date:        04/05/2011
- * Modified:    11/05/2011
+ * Modified:    17/05/2011
  *
  * Contents:
  * 1.	Reset
@@ -18,16 +20,20 @@
  */
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+dl, dt, dd, ol, ul, li,
 abbr, address, cite, code,
 del, dfn, em, img, ins, kbd, q, samp,
 small, strong, sub, sup, var,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend {
+table, caption, tbody, tfoot, thead, tr, th, td,
+fieldset, form, label, legend, input, textarea, button {
 	margin:0;
 	padding:0;
-	border:0;
 	font-size:100%;
 	vertical-align:baseline;
+}
+
+fieldset, img {
+	border:none;
 }
 
 abbr, acronym, dfn, var {
@@ -43,16 +49,16 @@ abbr, acronym, dfn, var {
 html input, html select, html textarea, html button {
 	margin:0;
 	padding:0;
-	line-height:1.2 !important; /* Gecko declares 'line-height:normal', roughly 1.2 <http://bit.ly/9BFPzL> */
+	line-height:1.214 !important; /* Gecko declares 'line-height:normal', roughly 1.214 at 14px <http://bit.ly/9BFPzL> */
 	font-size:1em;
 	box-sizing:content-box; -moz-box-sizing:content-box; -webkit-box-sizing:content-box;
-	-webkit-appearance:none;
 }
 	input:focus, select:focus, textarea:focus, button:focus {
 		z-index:1; /* For Opera */
 	}
-	input, select {
+	select {
 		vertical-align:middle;
+		-webkit-appearance:none;
 	}
 
 	button {
@@ -61,6 +67,7 @@ html input, html select, html textarea, html button {
 		white-space:nowrap;
 		cursor:pointer;
 		border:0;
+		-webkit-appearance:none;
 	}
 		button::-moz-focus-inner, input::-moz-focus-inner {
 			padding:0;
@@ -71,6 +78,13 @@ html input, html select, html textarea, html button {
 		display:block;
 		height:auto;
 		resize:none;
+	}
+
+	input.checkbox, input.radio, input[type=checkbox], input[type=radio] {
+		width:auto;
+		height:auto;
+		padding:0;
+		border:none;
 	}
 
 /**
@@ -276,12 +290,6 @@ fieldset {
 	fieldset .row {
 		padding-bottom:1em;
 	}
-	fieldset .inline, fieldset .checkbox, fieldset .radio { /* extends .row */
-		overflow:hidden;
-	}
-		.inline label, .checkbox input, .radio input {
-			float:left;
-		}
 
 /* Labels */
 label {
@@ -294,9 +302,10 @@ label {
 		color:#ccc;
 	}
 	.inline label, .checkbox label, .radio label {
+		display:-moz-inline-stack; /* Firefox < 3 */
+		display:inline-block;
 		padding-top:5px; /* Input padding + border */
 		padding-bottom:5px;
-		line-height:normal;
 	}
 
 /* Text inputs, text areas and select boxes */
@@ -304,12 +313,6 @@ form input, form select, form textarea, form button { /* See comment above about
 	height:1.2em;
 	font:inherit;
 }
-	::-webkit-input-placeholder {
-		color:#888;
-	}
-	input:-moz-placeholder {
-		color:#888;
-	}
 	form input, form select, form textarea {
 		width:300px;
 		color:#888;
@@ -357,6 +360,7 @@ form input, form select, form textarea, form button { /* See comment above about
 	}
 		.error {
 			display:block;
+			width:290px;
 			padding:0 5px;
 			line-height:1.5;
 			color:#c81730;

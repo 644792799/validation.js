@@ -2,8 +2,8 @@
 
 [Examples and Documentation](http://i-like-robots.github.com/Form-Validation/)
 
-Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check for value
-present/empty, email address format, URLs, custom expressions and comprehensive date validation. Validatating forms isn't fun but hopefully
+Standalone, understandable Javascript form validation. No gimmicks, fluff or feature bloat. Includes methods to check for value present/empty; email
+addresses, URLs and custom expressions; Comprehensive date validation; string lenghs and dealing with numbers. Validatating forms isn't fun but hopefully
 Validation.js makes it less of a pain.
 
 Written by [Matt Hinchliffe](http://www.maketea.co.uk) and should work in the following browsers:
