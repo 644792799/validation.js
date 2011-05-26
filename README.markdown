@@ -1,4 +1,4 @@
-# Validation.js 1.0.0
+# Validation.js 1.0.1
 
 [Examples and Documentation](http://i-like-robots.github.com/Form-Validation/)
 
