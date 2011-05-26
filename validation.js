@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
- * @version 1.0.0
- * @modified 04/05/2011
+ * @version 1.0.1
+ * @modified 26/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -28,7 +28,7 @@ function Validate (form_id, model, opts)
 		 * Instantiate Validation
 		 * @see Validate
 		 */
-		init: function (form_id, model, opts)
+		init: function(form_id, model, opts)
 		{
 			if (opts === undefined)
 			{
@@ -68,7 +68,7 @@ function Validate (form_id, model, opts)
 			}
 
 			// Bind submit event listener to form
-			this.bind('submit', function (event)
+			this.bind('submit', function(event)
 			{
 				self.form_valid = true;
 
@@ -98,7 +98,7 @@ function Validate (form_id, model, opts)
 		 * @param {function} handler Method to execute on event
 		 * @param {string|object} target ID string or DOM object reference
 		 */
-		bind: function (listener, handler, target)
+		bind: function(listener, handler, target)
 		{
 			target = target || this.form;
 
@@ -126,7 +126,7 @@ function Validate (form_id, model, opts)
 		 *
 		 * @returns Error list node
 		 */
-		error_list: function ()
+		error_list: function()
 		{
 			var list;
 
@@ -156,7 +156,7 @@ function Validate (form_id, model, opts)
 		 * @param {object} target
 		 * @param {string} message
 		 */
-		create_error: function (target, message)
+		create_error: function(target, message)
 		{
 			this.errors[target.id] = message;
 
@@ -198,7 +198,7 @@ function Validate (form_id, model, opts)
 		 *
 		 * @param {string} id
 		 */
-		clear_error: function (id)
+		clear_error: function(id)
 		{
 			var error = document.getElementById('error__' + id);
 
@@ -214,7 +214,7 @@ function Validate (form_id, model, opts)
 		 * @param {string} input
 		 * @returns error string
 		 */
-		get_error: function (input)
+		get_error: function(input)
 		{
 			return this.errors[input] || undefined;
 		},
@@ -225,7 +225,7 @@ function Validate (form_id, model, opts)
 		 * @param {string} input
 		 * @returns boolean
 		 */
-		is_valid: function (input)
+		is_valid: function(input)
 		{
 			return !! (this.valid[input]);
 		},
@@ -239,7 +239,7 @@ function Validate (form_id, model, opts)
 		 *
 		 * @param {string} input
 		 */
-		validate: function (input)
+		validate: function(input)
 		{
 			var target;
 
@@ -300,12 +300,12 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Get an inputs value or status
+		 * Get value
 		 *
 		 * @param {object} obj
 		 * @return The target input value
 		 */
-		get_value: function (obj)
+		get_value: function(obj)
 		{
 			var type;
 
@@ -326,13 +326,13 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Test if any value is present or checked
+		 * Present
 		 *
-		 * @param {mixed} value
+		 * @param value
 		 * @param {boolean} not
 		 * @returns Boolean
 		 */
-		present: function (value, not)
+		present: function(value, not)
 		{
 			var bool;
 
@@ -349,7 +349,7 @@ function Validate (form_id, model, opts)
 			// Check string entered is greater than zero
 			else
 			{
-				bool = !! (value.length > 0);
+				bool = (value.length > 0);
 			}
 
 			// Invert boolean if checking for not present
@@ -358,11 +358,10 @@ function Validate (form_id, model, opts)
 
 		/**
 		 * Regular expressions for use with test() method
-		 * Add more with 'your_object.methods.expressions[name] = /^*$/'
+		 * Add more with 'your_object.expressions[name] = /^*$/'
 		 */
 		expressions: {
 			alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
-			number: /^([0-9\-])+$/,                                                                  // Characters 0-9 only of any length
 			text: /^(^[a-z])+$/,                                                                     // Characters a-z of any length in either case
 			email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,                              // TLD email address
 			url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/,                 // URL with or without http(s)/www
@@ -371,13 +370,15 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Test a value string against a regular expression
+		 * Test
+		 *
+		 * Check a value string against a regular expression
 		 *
 		 * @param {string} value
 		 * @param {string} regex
 		 * @return A boolean if test is performed or does not exist or null if no value is present
 		 */
-		test: function (value, regex)
+		test: function(value, regex)
 		{
 			if (!this.present(value, true))
 			{
@@ -395,7 +396,7 @@ function Validate (form_id, model, opts)
 		},
 
 		/**
-		 * Test if a string is a valid date
+		 * Valid date
 		 *
 		 * Valid strings may include 1-1-2011, 1.1.11, 01/01/2011 etc. The Javascript Date object is useless in this 
 		 * instance as an invalid date of 32/13/11 would be 'rounded' up as 1/2/12
@@ -405,16 +406,13 @@ function Validate (form_id, model, opts)
 		 * @param {string} delimiter
 		 * @return A boolean or null if no value is present
 		 * @example
-		 * valid_date: [false, '/', 'Please enter a valid date']
+		 * valid_date: {
+		 *     params: [false, '/']
+		 * }
 		 */
-		valid_date: function (value, usa, delimiter)
+		valid_date: function(value, usa, delimiter)
 		{
 			var parts, day, month, year;
-
-			if (!this.present(value, true))
-			{
-				return null;
-			}
 
 			// Standardise date string with a new delimiter
 			value = value.split(delimiter || '-').join(',');
@@ -455,7 +453,7 @@ function Validate (form_id, model, opts)
 		 * @param {string} value
 		 * @param {int} length
 		 */
-		longer_than: function (value, length)
+		longer_than: function(value, length)
 		{
 			return (value.toString().length >= length);
 		},
@@ -466,7 +464,7 @@ function Validate (form_id, model, opts)
 		 * @param {string} value
 		 * @param {int} length
 		 */
-		shorter_than: function (value, length)
+		shorter_than: function(value, length)
 		{
 			return (value.toString().length <= length);
 		},
@@ -474,50 +472,54 @@ function Validate (form_id, model, opts)
 		/**
 		 * Number is an integer
 		 *
-		 * For a round-up on testing for intergers see <http://bit.ly/aOpiDa>
+		 * For a round-up on testing for integers see <http://bit.ly/aOpiDa>
 		 *
 		 * @param {number} value
 		 * @param {boolean} not
 		 */
-		is_int: function (value, not)
+		is_int: function(value, not)
 		{
-			var bool = !! ((parseFloat(value) == parseInt(value)) && !isNaN(value));
+			var bool = ((parseFloat(value, 10) == parseInt(value, 10)) && !isNaN(value));
 
 			// Invert boolean if checking for NOT an integer
 			return (not) ? bool : !bool;
 		},
 
 		/**
-		 * Number is greater than
+		 * Greater than
+		 *
+		 * This is a shortcut for the compare_numbers() method
 		 *
 		 * @param value
 		 * @param required
 		 */
-		greater_than: function (value, required)
+		greater_than: function(value, required)
 		{
-			return this.compare_numbers(value, required, '>=');
+			return this.compare_numbers(value, required, '>');
 		},
 
 		/**
-		 * Number is less than
+		 * Less than
+		 *
+		 * This is a shortcut for the compare_numbers() method
 		 *
 		 * @param value
 		 * @param required
 		 */
-		less_than: function (value, required)
+		less_than: function(value, required)
 		{
-			return this.compare_numbers(value, required, '<=');
+			return this.compare_numbers(value, required, '<');
 		},
 
 		/**
-		 * Compare two numbers
+		 * Compare numbers
 		 *
 		 * @param value
 		 * @param required
 		 * @param {string} operator
 		 * 
 		 */
-		compare_numbers: function (value, required, operator)
+		compare_numbers: function(value, required, operator)
 		{
 			if (!this.present(value, true))
 			{
@@ -537,53 +539,60 @@ function Validate (form_id, model, opts)
 			{
 				// Value is greater than
 				case '>' :
-					return (value > required);
+					result = (value > required);
 					break;
 
 				// Value is greater or equal to
 				case '>=' :
-					return (value >= required);
+					result = (value >= required);
 					break;
 
 				// Value is less than
 				case '<' :
-					return (value < required);
+					result = (value < required);
 					break;
 
 				// Value is less than or equal to
 				case '<=' :
-					return (value <= required);
+					result = (value <= required);
+					break;
+
+				// Value is a multiple of
+				case '*':
+					result = (value % required === 0);
 					break;
 
 				// Value is a factor of
-				case '%':
-					return (value % required == 0);
+				case '/':
+					result = (required % value === 0);
 					break;
 
 				// Value does is not equal to
-				case '!=' :
-					return (value != required);
+				case '!' :
+					result = (value != required);
 					break;
 
 				// Value is equal to
 				default: /* == */
-					return (value == required);
+					result = (value == required);
 					break;
 			}
 		},
 
 		/**
-		 * Compare input values
+		 * Match
+		 *
+		 * Compare two input values
 		 *
 		 * @param {string} value
 		 * @param {string} target_id
 		 */
-		match: function (value, target_id)
+		match: function(value, target_id)
 		{
 			var target = document.getElementById(target_id),
 			    match = target ? this.get_value(target) : null;
 
-			return !! (value === match);
+			return (value === match);
 		}
 	};
 
@@ -602,7 +611,7 @@ function Validate (form_id, model, opts)
  Douglas Crockford <http://javascript.crockford.com/prototypal.html>
  **/
 if (typeof Object.create !== 'function') {
-	Object.create = function (o) {
+	Object.create = function(o) {
 		function F() {}
 		F.prototype = o;
 		return new F();
