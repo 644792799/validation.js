@@ -139,7 +139,8 @@ var options = {
 					validate: [
 						{
 							method: 'match',
-							params: 'email'
+							params: 'email-address',
+							error: 'The given email addresses do not match'
 						}
 					],
 					error: 'Please confirm your email address'
@@ -221,7 +222,77 @@ var options = {
 			</fieldset>
 			</form>
 
-			<pre title="Javascript"></pre>
+			<pre title="Javascript">var rules = {
+	a_number: {
+		required: true,
+		validate: [
+			{
+				method: 'is_number',
+				error: 'This is not a number'
+			}
+		],
+		error: 'Please enter a number'
+	},
+	an_integer: {
+		required: true,
+		validate: [
+			{
+				method: 'is_integer',
+				error: 'This is not an integer'
+			}
+		],
+		error: 'Please enter a number'
+	},
+	greater_than: {
+		required: true,
+		validate: [
+			{
+				method: 'greater_than',
+				params: 5,
+				error: 'This is not greater than 5'
+			}
+		],
+		error: 'Please enter a number'
+	},
+	greater_less_than: {
+		required: true,
+		validate: [
+			{
+				method: 'greater_than',
+				params: 5.25,
+				error: 'This is not greater than 5.25'
+			},
+			{
+				method: 'less_than',
+				params: 5.75,
+				error: 'This is not less than 5.75'
+			}
+		],
+		error: 'Please enter a number'
+	},
+	multiple_of: {
+		required: true,
+		validate: [
+			{
+				method: 'compare_numbers',
+				params: [5, '*'],
+				error: 'This is not a multiple of 5'
+			}
+		],
+		error: 'Please enter a number'
+	},
+	factor_of: {
+		required: true,
+		validate: [
+			{
+				method: 'compare_numbers',
+				params: [30, '/'],
+				error: 'This is not a factor of 30'
+			}
+		],
+		error: 'Please enter a number'
+	}
+};</pre>
 
 			<script>
 			var rules = {
@@ -288,7 +359,7 @@ var options = {
 					validate: [
 						{
 							method: 'compare_numbers',
-							params: [30, '*/'],
+							params: [30, '/'],
 							error: 'This is not a factor of 30'
 						}
 					],
@@ -308,8 +379,8 @@ var options = {
 			<h4>Validate radio buttons and checkboxes</h4>
 
 			<p>
-				Validating an array of inputs (inputs sharing the same name appended with a pair of square brackets &quot;<code>[]</code>&quot;) is tricky in
-				many situations but here it is in Validation.js:
+				Validating an array of inputs (inputs that share the same name appended with a pair of square brackets &quot;<code>[]</code>&quot;) is tricky
+				in many situations but here it is in Validation.js:
 			</p>
 
 			<form id="form3" action="" method="get">
@@ -350,10 +421,19 @@ var options = {
 			</fieldset>
 			</form>
 
+			<pre title="Javascript">var rules = {
+	'radios[]': {
+		required: true
+	}
+};
+
+var example3 = Validate('form3', rules, {});</pre>
+
 			<script>
 			var rules = {
 				'radios[]': {
-					required: true
+					required: true,
+					multiple: 'single'
 				}
 			};
 

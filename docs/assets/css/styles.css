@@ -1,9 +1,9 @@
 @charset "UTF-8";
 
 /**
- * Created by:  Matt Hinchliffe, www.maketea.co.uk
- * Date:        04/05/2011
- * Modified:    17/05/2011
+ * Created by: Matt Hinchliffe, www.maketea.co.uk
+ * Date:       04/05/2011
+ * Modified:   24/05/2011
  *
  * Contents:
  * 1.	Reset
@@ -19,7 +19,7 @@
  * 1. Reset
  */
 html, body, div, span, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre, figure, figcaption
 dl, dt, dd, ol, ul, li,
 abbr, address, cite, code,
 del, dfn, em, img, ins, kbd, q, samp,
@@ -162,18 +162,32 @@ ul, ol {
 /* Monospaced */
 pre, code {
 	font-family:Consolas, "Lucida Console", Monaco, monospace;
-	color:#80f;
 }
 	pre {
+		max-height:12em;
 		margin-bottom:1.5em;
-		padding:6px;
+		padding:12px;
 		overflow:auto;
-		background:#eee;
+		color:#fff;
+		background:#293134;
 		border-radius:7px; -moz-border-radius:7px; -webkit-border-radius:7px;
 	}
 		pre strong, code strong {
 			color:#f00;
 		}
+	code {
+		padding:0 3px;
+		color:#293134;
+		background:#eee;
+		border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px;
+	}
+
+/* Figures */
+figure {
+}
+	figcaption, figure p {
+		font-style:italic;
+	}
 
 /* Links */
 a {
@@ -377,14 +391,13 @@ form input, form select, form textarea, form button { /* See comment above about
 }
 
 /* Help notices */
-div.help {
+.help {
 	padding:12px;
 	background:#fcf6bf;
 	border-radius:7px; -moz-border-radius:7px; -webkit-border-radius:7px;
 }
-	div.help pre {
+	.help pre {
 		margin:0;
-		border:1px solid #ddd;
 		border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
 	}
 

@@ -1,7 +1,7 @@
 ﻿/**
  * @author Matt Hinchliffe <http://www.maketea.co.uk>
  * @version 1.1.0
- * @modified 16/05/2011
+ * @modified 24/05/2011
  * @title Validation.js
  * @fileOverview Standalone Javascript form validation. No gimmicks, fluff or feature bloat.
  */
@@ -277,10 +277,7 @@ function Validate (form_id, model, options)
 			// If required option is set make push present() to validations
 			if (this.model[input].required)
 			{
-				validations.push({
-					method: 'present',
-					params: true
-				});
+				validations.push({ method: 'present' });
 			}
 
 			if (this.model[input].validate)
@@ -288,8 +285,11 @@ function Validate (form_id, model, options)
 				validations = validations.concat(this.model[input].validate);
 			}
 
+			// TODO: Multiple inputs (single valid, all valid)
+			// multiple: all|single (default)
+
 			// Loop through inputs
-			var valid = true;
+			var input_valid = false;
 
 			input_loop:
 			for (var e = 0; e < targets.length; e++)
@@ -299,7 +299,7 @@ function Validate (form_id, model, options)
 				// Loop through validation methods
 				for (var i = 0; i < validations.length; i++)
 				{
-					var args = validations[i].params, method = validations[i].method || false;
+					var args = validations[i].params || true, method = validations[i].method || false;
 
 					// Continue only if a value is present
 					if (method != 'present' && !this.present(value, true))
@@ -325,7 +325,7 @@ function Validate (form_id, model, options)
 					}
 					else
 					{
-						this.valid[input] = true;
+						input_valid = this.valid[input] = true;
 					}
 				}
 			}
@@ -393,10 +393,11 @@ function Validate (form_id, model, options)
 
 		/**
 		 * Regular expressions for use with test() method
-		 * Add more with 'your_object.expressions[name] = /^*$/'
+		 * Add more with 'your_object.methods.expressions[name] = /^*$/'
 		 */
 		expressions: {
 			alphanumeric: /^([a-z0-9_\-])$/,                                                         // Characters a-z, 0-9, underscores and hyphens in lowercase only
+			number: /^([0-9\-])+$/,                                                                  // Characters 0-9 only of any length
 			text: /^(^[a-z])+$/,                                                                     // Characters a-z of any length in either case
 			email: /^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/,                              // TLD email address
 			url: /^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?$/,                 // URL with or without http(s)/www
@@ -605,12 +606,12 @@ function Validate (form_id, model, options)
 					break;
 
 				// Value is a factor of
-				case '*/':
+				case '/':
 					result = (required % value === 0);
 					break;
 
 				// Value does is not equal to
-				case '!=' :
+				case '!' :
 					result = (value != required);
 					break;
 

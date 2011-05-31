@@ -17,14 +17,31 @@
 		<h1>Input Object</h1>
 
 		<p>
-			Input objects are used to bind validation methods and their parameters to each form input. They are designed to be readable and flexible.
+			Input objects are used to bind validation methods and their parameters to each form input in an easy to read and understand way. They are written
+			as an object literal.
 		</p>
 
 		<p>
-			The 'key' is the ID of the form input. For inputs to validate must have an ID.
+			The 'key' is the name of the form input. For an array of inputs (inputs that share the same name appended with a pair of square brackets
+			&quot;<code>[]</code>&quot;) the square brackets must be included.
 		</p>
 
-		<div id="help-array-literal" class="help">
+		<p>
+			The simplest notation is for a required field. Any value within the input will return as valid.
+		</p>
+
+		<figure>
+			<pre class="Javascript">my_input: {
+	required: true
+}</pre>
+			<figcaption>
+				<p>
+					The simplest notation is for a required field. Any value within the input will return as valid.
+				</p>
+			</figcaption>
+		</figure>
+
+		<aside id="help-array-literal" class="help">
 
 			<h2>Array literal</h2>
 
@@ -34,7 +51,7 @@
 
 			<pre>['arrays', 'are', 'easy' 'to', 'understand']</pre>
 
-		</div>
+		</aside>
 
 	</div>
 

@@ -38,9 +38,9 @@
 			<dd>
 
 				<p>
-					Each form input requiring validation is passed into the constructor within an object literal where the key is the name of the input to be.
-					The value is also an object literal and contains the arguments to test the inputs value against. <a href="input_object.html">Find out how
-					to write an input object</a>.
+					Each form input requiring validation is passed into the constructor as an object literal; the key being the name of the input to be
+					validated. The value is also an object literal and contains the arguments and validation methods.
+					<a href="input_object.html">Find out how to apply validation methods</a>.
 				</p>
 
 			</dd>
@@ -56,13 +56,13 @@
 			</dd>
 		</dl>
 
-		<div id="help-object-literal" class="help">
+		<aside id="help-object-literal" class="help">
 
 			<h2>Object literal</h2>
 
 			<p>
 				An object literal is contained within curly braces (<code>{}</code>) and written in &quot;<code>key: value</code>&quot; pairs separated by a
-				comma. Keys must be quoted if they contain hyphens or if they are a global object namesake such as &quot;date&quot;
+				comma. Keys must be encapsulated by quotes if they contain symbols or are the namesake of a global object such as &quot;date&quot;
 				(<a href="https://developer.mozilla.org/en/JavaScript/Reference#Standard_global_objects_(alphabetically)">See a list of global objects</a>).
 				Values can be any type of data.
 			</p>
@@ -74,7 +74,7 @@
 	'such-as': [function(), [array], 'strings']
 }</pre>
 
-		</div>
+		</aside>
 
 	</div>
 
